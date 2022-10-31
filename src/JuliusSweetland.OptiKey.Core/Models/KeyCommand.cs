@@ -1,8 +1,10 @@
 ﻿// Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
 using JuliusSweetland.OptiKey.Enums;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
@@ -15,6 +17,7 @@ namespace JuliusSweetland.OptiKey.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public KeyCommand() { }
 
@@ -45,7 +48,17 @@ namespace JuliusSweetland.OptiKey.Models
 
     public class ActionCommand : KeyCommand
     {
-        [XmlText] public string XmlText { get { return Value; } set { Value = value; } }
+        [XmlText] public string XmlText
+        { 
+            get { return FunctionKey.ToString(); }
+            set
+            {
+                if (!Enum.TryParse(value, out FunctionKeys actionEnum))
+                    Log.ErrorFormat("Could not parse {0} as function key", value);
+                else
+                    FunctionKey = actionEnum;
+            }
+        }
 
         [XmlIgnore] public FunctionKeys FunctionKey { get; set; }
     }
@@ -103,20 +116,19 @@ namespace JuliusSweetland.OptiKey.Models
 
     public class SwitchCommand : KeyCommand
     {
-        [XmlElement("Time", typeof(SwitchTime))]
-        public List<SwitchTime> SwitchTimes = new List<SwitchTime>();
-    }
-
-    public class SwitchTime
-    {
-        [XmlIgnore] public TimeSpan? TimeSpan;
-        [XmlAttribute] public string Value
-        {
-            get { return TimeSpan.HasValue ? TimeSpan.Value.TotalMilliseconds.ToString() : null; }
-            set { TimeSpan = double.TryParse(value, out double result) 
-                    ? (TimeSpan?)System.TimeSpan.FromMilliseconds(result) : null; }
-        }
-        public KeyCommand KeyCommand { get; set; }
+        [XmlAttribute] public string Label { get; set; }
+        [XmlAttribute] public string Symbol { get; set; }
+        [XmlElement("Action", typeof(ActionCommand))]
+        [XmlElement("ChangeKeyboard", typeof(ChangeKeyboardCommand))]
+        [XmlElement("KeyDown", typeof(KeyDownCommand))]
+        [XmlElement("KeyUp", typeof(KeyUpCommand))]
+        [XmlElement("KeyToggle", typeof(KeyTogglCommand))]
+        [XmlElement("Loop", typeof(LoopCommand))]
+        [XmlElement("Plugin", typeof(PluginCommand))]
+        [XmlElement("MoveWindow", typeof(MoveWindowCommand))]
+        [XmlElement("Text", typeof(TextCommand))]
+        [XmlElement("Wait", typeof(WaitCommand))]
+        public List<KeyCommand> Commands { get; set; } = new List<KeyCommand>();
     }
 
     public class TextCommand : KeyCommand

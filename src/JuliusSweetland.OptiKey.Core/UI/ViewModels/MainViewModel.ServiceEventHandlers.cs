@@ -67,6 +67,19 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     {
                         keyStateService.KeySelectionProgress[progress.Item1.KeyValue] =
                             new NotifyingProxy<double>(progress.Item2);
+
+                        var singleKeyValue = progress.Item1.KeyValue;
+                        //if the key is in a pending state and gets released, then perform the action
+                        if (progress.Item2 == 0 && keyStateService.KeySwitchStates.Keys.Contains(singleKeyValue)
+                        && keyStateService.KeySwitchStates[singleKeyValue].Value > 0)
+                        {
+                            var kv = new KeyValue(singleKeyValue.String)
+                            {
+                                Commands = (singleKeyValue.Commands[keyStateService.KeySwitchStates[singleKeyValue].Value - 1] as SwitchCommand).Commands
+                            };
+                            inputServiceSelectionResultHandler.Invoke(this, new Tuple<List<Point>, KeyValue, List<string>>(new List<Point>(), kv, null));
+                            keyStateService.ClearKeySwitchStates();
+                        }
                     }
                     else if (SelectionMode == SelectionModes.Point)
                     {
@@ -126,7 +139,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     {
                         //DynamicKeys can have a list of Commands and perform multiple actions
                         if (singleKeyValue != null && singleKeyValue.Commands != null && singleKeyValue.Commands.Any())
-                        {                            
+                        {
                             //if the key is in a running state and gets pressed, then stop it
                             if (keyStateService.KeyRunningStates[singleKeyValue].Value)
                             {
@@ -2472,6 +2485,13 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 var commandList = new List<KeyCommand>();
                 commandList.AddRange(singleKeyValue.Commands);
+
+                if (commandList.Exists(x => x is SwitchCommand))
+                {
+                    keyStateService.ProgressKeySwitchState(singleKeyValue);
+                    return;
+                }
+
                 keyStateService.KeyRunningStates[singleKeyValue].Value = true;
 
                 TimeSpanOverrides timeSpanOverrides = null;

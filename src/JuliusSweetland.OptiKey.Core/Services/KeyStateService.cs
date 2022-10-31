@@ -23,6 +23,7 @@ namespace JuliusSweetland.OptiKey.Services
         private readonly NotifyingConcurrentDictionary<KeyValue, KeyDownStates> keyDownStates;
         private readonly NotifyingConcurrentDictionary<KeyValue, bool> keyHighlightStates;
         private readonly NotifyingConcurrentDictionary<KeyValue, bool> keyRunningStates;
+        private readonly NotifyingConcurrentDictionary<KeyValue, int> keySwitchStates;
         private readonly List<Tuple<KeyValue, KeyValue>> keyFamily;
         private readonly IDictionary<string, List<KeyValue>> keyValueByGroup;
         private readonly KeyEnabledStates keyEnabledStates;
@@ -48,6 +49,7 @@ namespace JuliusSweetland.OptiKey.Services
             this.keyDownStates = new NotifyingConcurrentDictionary<KeyValue, KeyDownStates>();
             this.keyHighlightStates = new NotifyingConcurrentDictionary<KeyValue, bool>();
             this.keyRunningStates = new NotifyingConcurrentDictionary<KeyValue, bool>();
+            this.keySwitchStates = new NotifyingConcurrentDictionary<KeyValue, int>();
             this.keyFamily = new List<Tuple<KeyValue, KeyValue>>();
             this.keyValueByGroup = new Dictionary<string, List<KeyValue>>();
             this.keyEnabledStates = new KeyEnabledStates(this, suggestionService, capturingStateManager, lastMouseActionStateManager, calibrationService);
@@ -71,6 +73,7 @@ namespace JuliusSweetland.OptiKey.Services
         public NotifyingConcurrentDictionary<KeyValue, KeyDownStates> KeyDownStates { get { return keyDownStates; } }
         public NotifyingConcurrentDictionary<KeyValue, bool> KeyHighlightStates { get { return keyHighlightStates; } }
         public NotifyingConcurrentDictionary<KeyValue, bool> KeyRunningStates { get { return keyRunningStates; } }
+        public NotifyingConcurrentDictionary<KeyValue, int> KeySwitchStates { get { return keySwitchStates; } }
         public List<Tuple<KeyValue, KeyValue>> KeyFamily { get { return keyFamily; } }
         public IDictionary<string, List<KeyValue>> KeyValueByGroup { get { return keyValueByGroup; } }
         public KeyEnabledStates KeyEnabledStates { get { return keyEnabledStates; } }
@@ -109,6 +112,29 @@ namespace JuliusSweetland.OptiKey.Services
                     KeyDownStates[keyValue].Value = Enums.KeyDownStates.Up;
                 }
             }
+        }
+
+        public void ProgressKeySwitchState(KeyValue keyValue)
+        {
+            if (keyValue != null && keyValue.Commands != null && keyValue.Commands.Exists(x => x is SwitchCommand))
+            {
+                if (keySwitchStates.Keys.Contains(keyValue))
+                {
+                    var current = keySwitchStates[keyValue].Value;
+                    var max = keyValue.Commands.Count();
+                    Log.DebugFormat("Changing key switch state of '{0}' key", keyValue);
+                    KeySwitchStates[keyValue].Value = current < max ? current + 1: 0;
+                }
+                else
+                {
+                    Log.DebugFormat("Initialising key switch state of '{0}' key", keyValue);
+                    KeySwitchStates.Keys.Add(keyValue);
+                }
+            }
+        }
+        public void ClearKeySwitchStates()
+        {
+            KeySwitchStates.Clear();
         }
 
         public void ClearKeyHighlightStates()

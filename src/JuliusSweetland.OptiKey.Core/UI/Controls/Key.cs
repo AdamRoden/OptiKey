@@ -85,6 +85,34 @@ namespace JuliusSweetland.OptiKey.UI.Controls
             SelectionProgress = progress;
             SelectionInProgress = progress > 0d;
 
+            //Calculate SwitchState
+            if (Value != null && Value.Commands != null && Value.Commands.Exists(x => x is SwitchCommand))
+            {
+                var keySwitchSubscription = keyStateService.KeySwitchStates[Value]
+                    .OnPropertyChanges(ksp => ksp.Value)
+                    .Subscribe(value =>
+                    {
+                        if (value > 0)
+                        {
+                            var symbol = (Value.Commands[value - 1] as SwitchCommand).Symbol;
+                            if (symbol != null && Resources.Contains(symbol))
+                            {
+                                SymbolGeometry = (Geometry)Resources[symbol];
+                            }
+                            var label = (Value.Commands[value - 1] as SwitchCommand).Label;
+                            if (label != null)
+                            {
+                                Text = label;
+                            }
+                        }
+                        else
+                        {
+                            Text = null;
+                        }
+                    });
+                onUnloaded.Add(keySwitchSubscription);
+            }
+
             //Calculate IsEnabled
             Action calculateIsEnabled = () => IsEnabled = keyStateService.KeyEnabledStates[Value];
             var keyEnabledSubscription = keyStateService.KeyEnabledStates

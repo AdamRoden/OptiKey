@@ -321,18 +321,13 @@ namespace JuliusSweetland.OptiKey.UI.Views.Keyboards.Common
                 KeyValue commandKeyValue;
                 if (keyCommand is ActionCommand dynamicAction)
                 {
-                    if (!Enum.TryParse(dynamicAction.Value, out FunctionKeys actionEnum))
-                        Log.ErrorFormat("Could not parse {0} as function key", dynamicAction.Value);
-                    else
-                    {
-                        commandKeyValue = new KeyValue(actionEnum);
-                        commandList.Add(new ActionCommand() { FunctionKey = actionEnum });
+                    commandKeyValue = new KeyValue(dynamicAction.FunctionKey);
+                    commandList.Add(dynamicAction);
 
-                        if (KeyValues.KeysWhichCanBeLockedDown.Contains(commandKeyValue) 
-                            && !keyFamily.Contains(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue)))
-                        {
-                            keyFamily.Add(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue));
-                        }
+                    if (KeyValues.KeysWhichCanBeLockedDown.Contains(commandKeyValue) 
+                        && !keyFamily.Contains(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue)))
+                    {
+                        keyFamily.Add(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue));
                     }
                 }
                 else if (keyCommand is ChangeKeyboardCommand dynamicLink)
@@ -380,6 +375,10 @@ namespace JuliusSweetland.OptiKey.UI.Views.Keyboards.Common
                 else if (keyCommand is MoveWindowCommand dynamicBounds)
                 {
                     commandList.Add(new MoveWindowCommand() { Value = dynamicBounds.Value } );
+                }
+                else if (keyCommand is SwitchCommand switchCommand)
+                {
+                    commandList.Add(switchCommand);
                 }
                 else if (keyCommand is TextCommand dynamicText)
                 {
