@@ -25,7 +25,8 @@ namespace JuliusSweetland.OptiKey.Models
                 return this is ActionCommand ? KeyCommands.Action.ToString() :
                     this is ChangeKeyboardCommand ? KeyCommands.ChangeKeyboard.ToString() :
                     this is KeyDownCommand ? KeyCommands.KeyDown.ToString() :
-                    this is KeyTogglCommand ? KeyCommands.KeyToggle.ToString() :
+                    this is KeyPressCommand ? KeyCommands.KeyPress.ToString() :
+                    this is KeyToggleCommand ? KeyCommands.KeyToggle.ToString() :
                     this is KeyUpCommand ? KeyCommands.KeyUp.ToString() :
                     this is LoopCommand ? KeyCommands.Loop.ToString() :
                     this is MoveWindowCommand ? KeyCommands.MoveWindow.ToString() :
@@ -48,6 +49,8 @@ namespace JuliusSweetland.OptiKey.Models
         [XmlText] public string XmlText { get { return Value; } set { Value = value; } }
 
         [XmlIgnore] public FunctionKeys FunctionKey { get; set; }
+        // Optional - if FunctionKey Value takes a string for payload
+        [XmlAttribute] public string Payload { get; set; }
     }
 
     public class ChangeKeyboardCommand : KeyCommand
@@ -74,9 +77,25 @@ namespace JuliusSweetland.OptiKey.Models
         [XmlText] public string XmlText { get { return Value; } set { Value = value; } }
     }
 
-    public class KeyTogglCommand : KeyCommand
+    public class KeyPressCommand : KeyCommand
     {
         [XmlText] public string XmlText { get { return Value; } set { Value = value; } }
+        // Optional - otherwise uses defaults 
+        [XmlAttribute] public string Duration { get; set; }
+
+        // Optional - otherwise none
+        [XmlAttribute] public string Modifiers { get; set; }
+    }
+
+    public class KeyToggleCommand : KeyCommand
+    {
+        [XmlText] public string XmlText { get { return Value; } set { Value = value; } }
+
+        // Optional - pause the output when you're looking back at this key
+        [XmlAttribute] public bool PauseWhenLookingAtThisKey { get; set; }
+
+        // Optional - pause the output when you're looking at any key in keyboard
+        [XmlAttribute] public bool PauseWhenLookingAtAnyKey { get; set; }
     }
 
     public class LoopCommand : KeyCommand
@@ -85,7 +104,8 @@ namespace JuliusSweetland.OptiKey.Models
         [XmlElement("ChangeKeyboard", typeof(ChangeKeyboardCommand))]
         [XmlElement("KeyDown", typeof(KeyDownCommand))]
         [XmlElement("KeyUp", typeof(KeyUpCommand))]
-        [XmlElement("KeyToggle", typeof(KeyTogglCommand))]
+        [XmlElement("KeyPress", typeof(KeyPressCommand))]
+        [XmlElement("KeyToggle", typeof(KeyToggleCommand))]
         [XmlElement("Loop", typeof(LoopCommand))]
         [XmlElement("Plugin", typeof(PluginCommand))]
         [XmlElement("MoveWindow", typeof(MoveWindowCommand))]

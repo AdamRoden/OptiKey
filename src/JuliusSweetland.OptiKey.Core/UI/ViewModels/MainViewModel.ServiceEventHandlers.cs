@@ -1,12 +1,10 @@
 // Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Serialization;
 using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Models;
@@ -32,7 +30,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
             Log.Info("AttachErrorNotifyingServiceHandlers complete.");
         }
-        
+
         private void SetupInputServiceEventHandlers()
         {
             Log.Info("SetupInputServiceEventHandlers called.");
@@ -49,8 +47,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 {
                     mouseOutputService.MoveTo(CurrentPositionPoint);
                 }
-                
-                UpdateLookToScroll(CurrentPositionPoint);
+
+                foreach (var control in GetActiveControls())
+                {
+                    control.UpdatePosition(CurrentPositionPoint);
+                }
             };
 
             inputServiceSelectionProgressHandler = (o, progress) =>
@@ -126,7 +127,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     {
                         //DynamicKeys can have a list of Commands and perform multiple actions
                         if (singleKeyValue != null && singleKeyValue.Commands != null && singleKeyValue.Commands.Any())
-                        {                            
+                        {
                             //if the key is in a running state and gets pressed, then stop it
                             if (keyStateService.KeyRunningStates[singleKeyValue].Value)
                             {
@@ -174,7 +175,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
             inputService.PointToKeyValueMap = pointToKeyValueMap;
             inputService.SelectionMode = SelectionMode;
-            
+
             Log.Info("AttachInputServiceEventHandlers complete.");
         }
 
@@ -188,7 +189,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             inputService.SelectionProgress -= inputServiceSelectionProgressHandler;
             inputService.Selection -= inputServiceSelectionHandler;
             inputService.SelectionResult -= inputServiceSelectionResultHandler;
-            
+
             Log.Info("DetachInputServiceEventHandlers complete.");
         }
 
@@ -221,7 +222,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 };
             }
 
-            if (keyValue.BuiltInKeyboard.HasValue) 
+            if (keyValue.BuiltInKeyboard.HasValue)
             {
                 SetKeyboardFromEnum(keyValue.BuiltInKeyboard.Value, mainWindowManipulationService, backAction);
             }
@@ -637,13 +638,46 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     SelectVoice(singleKeyValue.String);
                     break;
 
+                case FunctionKeys.DynamicKeyboard: // Case where Dynamic keyboard selector requested for a specific location
+                    {
+                        Log.Info("Changing keyboard to DynamicKeyboard.");
+                        Log.InfoFormat("directory is {0}", singleKeyValue.String);
+                        string directory = singleKeyValue.String;
+
+                        Action reinstateModifiers = keyStateService.ReleaseModifiers(Log);
+                        Action backAction = () =>
+                        {
+                            Keyboard = currentKeyboard;
+                            reinstateModifiers();
+                            keyboardOutputService.ProcessFunctionKey(FunctionKeys.ClearScratchpad);
+                        };
+
+                        int pageIndex = 0;
+                        Keyboard = new DynamicKeyboardSelector(backAction, pageIndex, directory);
+                    }
+                    break;
+
+                case FunctionKeys.LookToScrollActive:
+                case FunctionKeys.MouseJoystick:
+                case FunctionKeys.LeftJoystick:
+                case FunctionKeys.RightJoystick:
+                case FunctionKeys.LegacyJoystick:
+                case FunctionKeys.ScrollJoystick:
+                case FunctionKeys.WasdJoystick:
+                    ToggleAxisControl(singleKeyValue);
+                    break;
+
+                case FunctionKeys.NoJoystick:
+                    DisableAll();
+                    break;
+
                 default:
                     //Process single key text, THEN function key. The use case might be to output text and then change keyboard, for example.
                     //N.B. Combining text and a function key changes the KeyValue, which will impact whether the KeyValue can be used to detect
                     //a key which can be locked down, or anything keyed on that KeyValue.
                     keyboardOutputService.ProcessSingleKeyText(singleKeyValue.String);
                     HandleFunctionKeySelectionResult(singleKeyValue);
-                break;
+                    break;
             }
         }
 
@@ -1012,9 +1046,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                         Action backAction;
                         var currentKeyboard2 = Keyboard;
                         int pageIndex = 0;
+                        string directory = Settings.Default.DynamicKeyboardsLocation;
                         if (Keyboard is DynamicKeyboardSelector)
                         {
                             var kb = Keyboard as DynamicKeyboardSelector;
+                            directory = kb.Directory;
                             backAction = kb.BackAction;
                             pageIndex = kb.PageIndex - 1;
                         }
@@ -1026,7 +1062,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                                 Keyboard = currentKeyboard2;
                             };
                         }
-                        Keyboard = new DynamicKeyboardSelector(backAction, pageIndex);
+                        Keyboard = new DynamicKeyboardSelector(backAction, pageIndex, directory);
                     }
                     break;
 
@@ -1037,9 +1073,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                         Action backAction;
                         var currentKeyboard2 = Keyboard;
                         int pageIndex = 0;
+                        string directory = Settings.Default.DynamicKeyboardsLocation;
                         if (Keyboard is DynamicKeyboardSelector)
                         {
                             var kb = Keyboard as DynamicKeyboardSelector;
+                            directory = kb.Directory;
                             backAction = kb.BackAction;
                             pageIndex = kb.PageIndex + 1;
                         }
@@ -1051,7 +1089,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                                 Keyboard = currentKeyboard2;
                             };
                         }
-                        Keyboard = new DynamicKeyboardSelector(backAction, pageIndex);
+                        Keyboard = new DynamicKeyboardSelector(backAction, pageIndex, directory);
                     }
                     break;
 
@@ -1213,9 +1251,14 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     break;
 
                 case FunctionKeys.LookToScrollActive:
-                    ToggleLookToScroll();
+                case FunctionKeys.MouseJoystick:
+                case FunctionKeys.LeftJoystick:
+                case FunctionKeys.RightJoystick:
+                case FunctionKeys.LegacyJoystick:
+                case FunctionKeys.ScrollJoystick:
+                case FunctionKeys.WasdJoystick:
+                    ToggleAxisControl(singleKeyValue);
                     break;
-
                 case FunctionKeys.MenuKeyboard:
                     Log.Info("Restoring window size.");
                     mainWindowManipulationService.Restore();
@@ -1241,12 +1284,12 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseDrag:
                     Log.Info("Mouse drag selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(firstFinalPoint =>
                     {
                         if (firstFinalPoint != null)
                         {
-                            audioService.PlaySound(Settings.Default.MouseDownSoundFile, Settings.Default.MouseDownSoundVolume);
+                                audioService.PlaySound(Settings.Default.MouseDownSoundFile, Settings.Default.MouseDownSoundVolume);
 
                             //This class reacts to the point selection event AFTER the MagnifyPopup reacts to it.
                             //This means that if the MagnifyPopup sets the nextPointSelectionAction from the
@@ -1271,28 +1314,28 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                                                 {
                                                     reinstateModifiers = keyStateService.ReleaseModifiers(Log);
                                                 }
-                                                mouseOutputService.MoveTo(fp1);
-                                                audioService.PlaySound(Settings.Default.MouseDownSoundFile, Settings.Default.MouseDownSoundVolume);
-                                                mouseOutputService.LeftButtonDown();
-                                                Thread.Sleep(Settings.Default.MouseDragDelayAfterLeftMouseButtonDownBeforeMove);
-
-                                                Vector stepVector = fp1 - fp2;
-                                                int steps = Settings.Default.MouseDragNumberOfSteps;
-                                                stepVector = stepVector / steps;
-
-                                                do
-                                                {
-                                                    fp1.X = fp1.X - stepVector.X;
-                                                    fp1.Y = fp1.Y - stepVector.Y;
                                                     mouseOutputService.MoveTo(fp1);
-                                                    Thread.Sleep(Settings.Default.MouseDragDelayBetweenEachStep);
-                                                    steps--;
-                                                } while (steps > 0);
+                                                    audioService.PlaySound(Settings.Default.MouseDownSoundFile, Settings.Default.MouseDownSoundVolume);
+                                                    mouseOutputService.LeftButtonDown();
+                                                    Thread.Sleep(Settings.Default.MouseDragDelayAfterLeftMouseButtonDownBeforeMove);
 
-                                                mouseOutputService.MoveTo(fp2);
-                                                Thread.Sleep(Settings.Default.MouseDragDelayAfterMoveBeforeLeftMouseButtonUp);
-                                                audioService.PlaySound(Settings.Default.MouseUpSoundFile, Settings.Default.MouseUpSoundVolume);
-                                                mouseOutputService.LeftButtonUp();
+                                                    Vector stepVector = fp1 - fp2;
+                                                    int steps = Settings.Default.MouseDragNumberOfSteps;
+                                                    stepVector = stepVector / steps;
+
+                                                    do
+                                                    {
+                                                        fp1.X = fp1.X - stepVector.X;
+                                                        fp1.Y = fp1.Y - stepVector.Y;
+                                                        mouseOutputService.MoveTo(fp1);
+                                                        Thread.Sleep(Settings.Default.MouseDragDelayBetweenEachStep);
+                                                        steps--;
+                                                    } while (steps > 0);
+
+                                                    mouseOutputService.MoveTo(fp2);
+                                                    Thread.Sleep(Settings.Default.MouseDragDelayAfterMoveBeforeLeftMouseButtonUp);
+                                                    audioService.PlaySound(Settings.Default.MouseUpSoundFile, Settings.Default.MouseUpSoundVolume);
+                                                    mouseOutputService.LeftButtonUp();
                                                 reinstateModifiers();
                                             };
 
@@ -1511,7 +1554,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndLeftClick:
                     Log.Info("Mouse move and left click selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1541,7 +1584,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndLeftDoubleClick:
                     Log.Info("Mouse move and left double click selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1571,7 +1614,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndMiddleClick:
                     Log.Info("Mouse move and middle click selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1601,7 +1644,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndRightClick:
                     Log.Info("Mouse move and right click selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1661,7 +1704,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndScrollToBottom:
                     Log.Info("Mouse move and scroll to bottom selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1691,7 +1734,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndScrollToLeft:
                     Log.Info("Mouse move and scroll to left selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1721,7 +1764,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndScrollToRight:
                     Log.Info("Mouse move and scroll to right selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1751,7 +1794,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveAndScrollToTop:
                     Log.Info("Mouse move and scroll to top selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -1827,7 +1870,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case FunctionKeys.MouseMoveTo:
                     Log.Info("Mouse move to selected.");
-                    resumeLookToScroll = SuspendLookToScrollWhileChoosingPointForMouse();
+                    resumeLookToScroll = SuspendWhileChoosingPointForMouse();
                     SetupFinalClickAction(finalPoint =>
                     {
                         if (finalPoint != null)
@@ -2344,12 +2387,16 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 case FunctionKeys.YesQuestionResult:
                     HandleYesNoQuestionResult(true);
                     break;
+
+                case FunctionKeys.NoJoystick:
+                    DisableAll();
+                    break;
             }
 
             keyboardOutputService.ProcessFunctionKey(singleKeyValue.FunctionKey.Value);
         }
 
-        private void SetupFinalClickAction(Action<Point?> finalClickAction, bool finalClickInSeries = true, bool suppressMagnification = false)
+        public void SetupFinalClickAction(Action<Point?> finalClickAction, bool finalClickInSeries = true, bool suppressMagnification = false)
         {
             nextPointSelectionAction = nextPoint =>
             {
@@ -2382,7 +2429,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             ShowCursor = true;
         }
 
-        private void ResetAndCleanupAfterMouseAction()
+        public void ResetAndCleanupAfterMouseAction()
         {
             SelectionMode = SelectionModes.Key;
             nextPointSelectionAction = null;
@@ -2495,7 +2542,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     {
                         await Task.Delay(10);
                         //if the timeout is equal to the min it means the key no longer has focus and has timed out
-                        keyStateService.KeyRunningStates[singleKeyValue].Value = (timeSpanOverrides.LockDownCancelTime > DateTimeOffset.MinValue) 
+                        keyStateService.KeyRunningStates[singleKeyValue].Value = (timeSpanOverrides.LockDownCancelTime > DateTimeOffset.MinValue)
                             ? keyStateService.KeyRunningStates[singleKeyValue].Value : false;
                     }
                     //if the timeout has not been set to the min then we lock down the key and return
@@ -2540,11 +2587,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         private async Task CommandList(KeyValue singleKeyValue, List<string> multiKeySelection, List<KeyCommand> commandList, int nestLevel)
         {
             Log.InfoFormat("CommandList called with command count: {0}, nest level: {1}", commandList.Count, nestLevel);
-            
+
             foreach(KeyCommand keyCommand in commandList)
             {
                 //if an external process has ordered this key to stop then return
-                if (!keyStateService.KeyRunningStates[singleKeyValue].Value) 
+                if (!keyStateService.KeyRunningStates[singleKeyValue].Value)
                     return;
 
                 if (keyCommand is LoopCommand loopCommand)
@@ -2583,6 +2630,8 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     if (keyCommand is ActionCommand actionCommand)
                     {
                         Log.InfoFormat("CommandList: Press function key: {0}", actionCommand.Value);
+                        if (!string.IsNullOrEmpty(actionCommand.Payload))
+                            Log.InfoFormat("CommandList: function key payload: {0}", actionCommand.Payload);
                         switch (actionCommand.FunctionKey)
                         {
                             case FunctionKeys.MouseDrag:
@@ -2598,8 +2647,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                                 suspendCommands = true;
                                 break;
                         }
-
-                        KeySelectionResult(new KeyValue(actionCommand.FunctionKey), multiKeySelection);
+                        KeySelectionResult(new KeyValue(actionCommand.FunctionKey, actionCommand.Payload), multiKeySelection);
                         while (suspendCommands)
                             await Task.Delay(10);
                     }
@@ -2617,7 +2665,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                         await keyboardOutputService.ProcessSingleKeyPress(keyCommand.Value, KeyPressKeyValue.KeyPressType.Press);
                         keyStateService.KeyDownStates[new KeyValue(keyCommand.Value)].Value = KeyDownStates.LockedDown;
                     }
-                    else if (keyCommand is KeyTogglCommand)
+                    else if (keyCommand is KeyToggleCommand)
                     {
                         if (keyStateService.KeyDownStates[new KeyValue(keyCommand.Value)].Value != KeyDownStates.Up)
                         {
@@ -2699,7 +2747,6 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 && !KeyStateService.KeyRunningStates[x.Item1].Value
                 && !keyStateService.KeyFamily.Exists(y => y.Item1 == x.Item1 && KeyStateService.KeyDownStates[y.Item2].Value != KeyDownStates.Up)))
             {
-                await keyboardOutputService.ProcessSingleKeyPress(parentKey.Item1.String, KeyPressKeyValue.KeyPressType.Release);
                 keyStateService.KeyDownStates[parentKey.Item1].Value = KeyDownStates.Up;
             }
 
@@ -2718,10 +2765,10 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 return;
             }
             if (!PluginEngine.IsPluginAvailable(pluginCommand.Name))
-            {
+                {
                 DisplayPluginError($"Could not find plugin {pluginCommand.Name}");
                 return;
-            }
+        }
 
             // Build plugin context
             Dictionary<string, string> context = BuildPluginContext();

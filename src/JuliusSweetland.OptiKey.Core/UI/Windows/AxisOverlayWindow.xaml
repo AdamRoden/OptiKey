@@ -1,0 +1,27 @@
+﻿<!-- Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved -->
+<Window x:Class="JuliusSweetland.OptiKey.UI.Windows.AxisOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:valueConverters="clr-namespace:JuliusSweetland.OptiKey.UI.ValueConverters"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Focusable="False"
+        IsHitTestVisible="False"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        WindowState="Maximized"
+        WindowStyle="None">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+        <valueConverters:ColourNameToBrush x:Key="ColourNameToBrush"/>
+        <valueConverters:EnumToVisibilityConverter x:Key="EnumToVisibility"/>
+    </Window.Resources>
+
+    <Window.Visibility>
+        <Binding Path="IsActive" Converter="{StaticResource BooleanToVisibility}"/>
+    </Window.Visibility>
+
+    <Canvas x:Name="canvas"/>
+</Window>

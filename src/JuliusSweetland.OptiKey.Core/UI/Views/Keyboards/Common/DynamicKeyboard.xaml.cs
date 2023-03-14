@@ -8,6 +8,7 @@ using JuliusSweetland.OptiKey.UI.Controls;
 using JuliusSweetland.OptiKey.UI.ValueConverters;
 using JuliusSweetland.OptiKey.UI.Windows;
 using log4net;
+using SharpVectors;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -284,10 +285,11 @@ namespace JuliusSweetland.OptiKey.UI.Views.Keyboards.Common
         {
             var xmlKeyValue = new KeyValue($"R{xmlDynamicKey.RowN}-C{xmlDynamicKey.ColN}");
             if (xmlDynamicKey.Commands.Count == 1
-                && Enum.TryParse(xmlDynamicKey.Commands.First().Value, out FunctionKeys actionEnum)
+                && xmlDynamicKey.Commands.First() is ActionCommand dynamicAction
+                && Enum.TryParse(dynamicAction.Value, out FunctionKeys actionEnum)
                 && KeyValues.KeysWhichCanBeLockedDown.Contains(new KeyValue(actionEnum)))
             {
-                var newKey = CreateDynamicKey(xmlDynamicKey, new KeyValue(actionEnum), minKeyWidth, minKeyHeight);
+                var newKey = CreateDynamicKey(xmlDynamicKey, new KeyValue(actionEnum, dynamicAction.Payload), minKeyWidth, minKeyHeight);
                 PlaceKeyInPosition(grid, newKey, xmlDynamicKey.RowN, xmlDynamicKey.ColN, xmlDynamicKey.HeightN, xmlDynamicKey.WidthN);
 
             }
@@ -326,7 +328,7 @@ namespace JuliusSweetland.OptiKey.UI.Views.Keyboards.Common
                     else
                     {
                         commandKeyValue = new KeyValue(actionEnum);
-                        commandList.Add(new ActionCommand() { FunctionKey = actionEnum });
+                        commandList.Add(new ActionCommand() { FunctionKey = actionEnum, Payload = dynamicAction.Payload });
 
                         if (KeyValues.KeysWhichCanBeLockedDown.Contains(commandKeyValue) 
                             && !keyFamily.Contains(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue)))
@@ -358,14 +360,48 @@ namespace JuliusSweetland.OptiKey.UI.Views.Keyboards.Common
                             keyFamily.Add(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue));
                     }
                 }
-                else if (keyCommand is KeyTogglCommand dynamicKeyToggle)
+                else if (keyCommand is KeyPressCommand dynamicKeyPress)
+                {
+                    if (string.IsNullOrEmpty(dynamicKeyPress.Value))
+                        Log.ErrorFormat("KeyPress text not found for {0} ", dynamicKeyPress.Value);
+                    else
+                    {
+                        int durationMs = 50;
+                        if (Int32.TryParse(dynamicKeyPress.Duration, out int customDurationMs))
+                            durationMs = customDurationMs;
+
+                        string modifiers = String.IsNullOrEmpty(dynamicKeyPress.Modifiers) ? "" : dynamicKeyPress.Modifiers;
+                        modifiers = modifiers.ToLower();
+
+                        bool useCtrl = modifiers.Contains("ctrl");
+                        bool useShift = modifiers.Contains("shift");
+                        bool useAlt = modifiers.Contains("alt");
+                        bool useWin = modifiers.Contains("win");
+
+                        // Temporarily hold modifiers
+                        if (useCtrl) { commandList.Add(new KeyDownCommand { Value = FunctionKeys.LeftCtrl.ToString() }); }
+                        if (useShift) { commandList.Add(new KeyDownCommand { Value = FunctionKeys.LeftShift.ToString() }); }
+                        if (useAlt) { commandList.Add(new KeyDownCommand { Value = FunctionKeys.LeftAlt.ToString() }); }
+                        if (useWin) { commandList.Add(new KeyDownCommand { Value = FunctionKeys.LeftWin.ToString() }); }
+
+                        commandList.Add(new KeyDownCommand { Value = dynamicKeyPress.Value });
+                        commandList.Add(new WaitCommand { Value = durationMs.ToString() });
+                        commandList.Add(new KeyUpCommand { Value = dynamicKeyPress.Value });
+
+                        if (useCtrl) { commandList.Add(new KeyUpCommand { Value = FunctionKeys.LeftCtrl.ToString() }); }
+                        if (useShift) { commandList.Add(new KeyUpCommand { Value = FunctionKeys.LeftShift.ToString() }); }
+                        if (useAlt) { commandList.Add(new KeyUpCommand { Value = FunctionKeys.LeftAlt.ToString() }); }
+                        if (useWin) { commandList.Add(new KeyUpCommand { Value = FunctionKeys.LeftWin.ToString() }); }
+                    }
+                }
+                else if (keyCommand is KeyToggleCommand dynamicKeyToggle)
                 {
                     if (string.IsNullOrEmpty(dynamicKeyToggle.Value))
                         Log.ErrorFormat("KeyToggle text not found for {0} ", dynamicKeyToggle.Value);
                     else
                     {
                         commandKeyValue = new KeyValue(dynamicKeyToggle.Value);
-                        commandList.Add(new KeyTogglCommand() { Value = dynamicKeyToggle.Value }); ;
+                        commandList.Add(new KeyToggleCommand() { Value = dynamicKeyToggle.Value }); ;
                         if (!keyFamily.Contains(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue)))
                             keyFamily.Add(new Tuple<KeyValue, KeyValue>(xmlKeyValue, commandKeyValue));
                     }

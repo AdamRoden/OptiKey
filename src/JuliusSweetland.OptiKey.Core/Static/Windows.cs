@@ -72,6 +72,20 @@ namespace JuliusSweetland.OptiKey.Static
             }
         }
 
+        public static string GetWindowClassName(IntPtr hWnd)
+        {
+            var builder = new StringBuilder(256);
+
+            if (PInvoke.GetClassName(hWnd, builder, builder.Capacity) != 0)
+            {
+                return builder.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static bool IsUWPTopLevelWindow(IntPtr hWnd)
         {
             return IsWindowOfClass(hWnd, UWPTopLevelWindowClassName);

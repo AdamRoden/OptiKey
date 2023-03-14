@@ -90,7 +90,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                     Commands.Insert(commandIndex, new KeyDownCommand() { Value = Interactor.Label });
                     break;
                 case KeyCommands.KeyToggle:
-                    Commands.Insert(commandIndex, new KeyTogglCommand() { Value = Interactor.Label });
+                    Commands.Insert(commandIndex, new KeyToggleCommand() { Value = Interactor.Label });
                     break;
                 case KeyCommands.KeyUp:
                     Commands.Insert(commandIndex, new KeyUpCommand() { Value = Interactor.Label });

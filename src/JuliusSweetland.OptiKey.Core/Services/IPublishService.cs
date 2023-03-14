@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
 using System.Windows;
 using WindowsInput.Native;
+using JuliusSweetland.OptiKey.Enums;
+using JuliusSweetland.OptiKey.Models;
 
 namespace JuliusSweetland.OptiKey.Services
 {
@@ -9,6 +11,11 @@ namespace JuliusSweetland.OptiKey.Services
         void KeyDown(VirtualKeyCode virtualKeyCode);
         void KeyUp(VirtualKeyCode virtualKeyCode);
         void KeyDownUp(VirtualKeyCode virtualKeyCode);
+        bool SupportsController();
+        void XBoxButtonDown(XboxButtons button);
+        void XBoxButtonUp(XboxButtons button);
+        void XBoxProcessJoystick(XboxAxes axisEnum, float amount);
+        bool TryXBoxThumbPress(string buttonString, KeyPressKeyValue.KeyPressType pressType);
         void LeftMouseButtonClick();
         void LeftMouseButtonDoubleClick();
         void LeftMouseButtonDown();
@@ -17,6 +24,7 @@ namespace JuliusSweetland.OptiKey.Services
         void MiddleMouseButtonDown();
         void MiddleMouseButtonUp();
         void MouseMouseToPoint(Point point);
+        void MouseMoveBy(Point point);
         void ReleaseAllDownKeys();
         void RightMouseButtonClick();
         void RightMouseButtonDown();

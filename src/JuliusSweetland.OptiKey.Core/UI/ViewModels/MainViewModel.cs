@@ -18,6 +18,7 @@ using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
 using System.Text;
 using System.Net.Http;
+using System.Reactive.Linq;
 using System.IO;
 
 namespace JuliusSweetland.OptiKey.UI.ViewModels
@@ -39,7 +40,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         private readonly IKeyboardOutputService keyboardOutputService;
         private readonly IMouseOutputService mouseOutputService;
         private readonly IWindowManipulationService mainWindowManipulationService;
-        private readonly List<INotifyErrors> errorNotifyingServices; 
+        private readonly List<INotifyErrors> errorNotifyingServices;
         private readonly InteractionRequest<NotificationWithCalibrationResult> calibrateRequest;
         private readonly StringBuilder pendingErrorToastNotificationContent = new StringBuilder();
         private readonly TranslationService translationService;
@@ -82,7 +83,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             IWindowManipulationService mainWindowManipulationService,
             List<INotifyErrors> errorNotifyingServices,
             string startKeyboardOverride = null)
-        { 
+        {
             this.audioService = audioService;
             this.calibrationService = calibrationService;
             this.dictionaryService = dictionaryService;
@@ -108,9 +109,100 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             AttachKeyboardSupportsSimulateKeyStrokesListener();
             AttachKeyboardSupportsMultiKeySelectionListener();
             ShowCrosshair = Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Crosshair
-                || Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Scope;
+                            || Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Scope;
             ShowMonical = Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Monical
                 || Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Scope;
+
+            // Initialise any axis handlers
+            void leftJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("leftJoystickAction, ({0}, {1})", x, y);
+                keyboardOutputService.XBoxProcessJoystick("LeftJoystickAxisX", x);
+                keyboardOutputService.XBoxProcessJoystick("LeftJoystickAxisY", -y);
+            }
+            void rightJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("rightJoystickAction, ({0}, {1})", x, y);
+                keyboardOutputService.XBoxProcessJoystick("RightJoystickAxisX", x);
+                keyboardOutputService.XBoxProcessJoystick("RightJoystickAxisY", -y);
+            }
+
+            void mouseJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("mouseJoystickAction, ({0}, {1})", x, y);
+                mouseOutputService.MoveBy(new Point(100.0 * x, 100.0 * y));
+            }
+
+            void legacyJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("legacyJoystickAction, ({0}, {1})", x, y);
+
+                if (keyStateService.KeyDownStates.Keys.Count(k => keyStateService.KeyDownStates[k].Value != KeyDownStates.Up
+                    && k.String != null && k.String.Contains("XboxLeftThumb")) > 0)
+                {
+                    keyboardOutputService.XBoxProcessJoystick("LeftJoystickAxisX", x);
+                    keyboardOutputService.XBoxProcessJoystick("RightJoystickAxisY", -y);
+                }
+                else
+                {
+                    keyboardOutputService.XBoxProcessJoystick("RightJoystickAxisX", x);
+                    keyboardOutputService.XBoxProcessJoystick("LeftJoystickAxisY", -y);
+                }
+            }
+
+            void scrollJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("scrollAction, ({0}, {1})", x, y);
+                mouseOutputService.ScrollWheelAbsolute((int)(100 * x), (int)(-100 * y));
+            }
+
+            void wasdJoystickAction(float x, float y)
+            {
+                Log.DebugFormat("wasdJoystickAction, ({0}, {1})", x, y);
+                float eps = 1e-6f;
+                if (x > eps)
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_D, KeyPressKeyValue.KeyPressType.Press);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_A, KeyPressKeyValue.KeyPressType.Release);
+                }
+                else if (x < -eps)
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_D, KeyPressKeyValue.KeyPressType.Release);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_A, KeyPressKeyValue.KeyPressType.Press);
+                }
+                else
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_D, KeyPressKeyValue.KeyPressType.Release);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_A, KeyPressKeyValue.KeyPressType.Release);
+                }
+
+                if (y > eps)
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_S, KeyPressKeyValue.KeyPressType.Press);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_W, KeyPressKeyValue.KeyPressType.Release);
+                }
+                else if (y < -eps)
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_S, KeyPressKeyValue.KeyPressType.Release);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_W, KeyPressKeyValue.KeyPressType.Press);
+                }
+                else
+                {
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_S, KeyPressKeyValue.KeyPressType.Release);
+                    keyboardOutputService.PressKey(WindowsInput.Native.VirtualKeyCode.VK_W, KeyPressKeyValue.KeyPressType.Release);
+                }
+            }
+
+            // Set up a set of (mutually exlusive) joystick controllers
+            AxisControls = new Dictionary<FunctionKeys, AxisControl>
+            {
+                { FunctionKeys.LeftJoystick, new AxisControl(FunctionKeys.LeftJoystick, leftJoystickAction, keyStateService) },
+                { FunctionKeys.RightJoystick, new AxisControl(FunctionKeys.RightJoystick, rightJoystickAction, keyStateService) },
+                { FunctionKeys.LegacyJoystick, new AxisControl(FunctionKeys.LegacyJoystick, legacyJoystickAction, keyStateService) },
+                { FunctionKeys.MouseJoystick, new AxisControl(FunctionKeys.MouseJoystick, mouseJoystickAction, keyStateService) },
+                { FunctionKeys.LookToScrollActive, new AxisControl(FunctionKeys.LookToScrollActive, scrollJoystickAction, keyStateService) },
+                { FunctionKeys.WasdJoystick, new AxisControl(FunctionKeys.WasdJoystick, wasdJoystickAction, keyStateService) }
+            };
         }
 
         #endregion
@@ -141,7 +233,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             get { return keyboard; }
             set
             {
-                DeactivateLookToScrollUponSwitchingKeyboards();
+                DeactivateLookToScrollUponSwitchingKeyboards(); 
                 keyboard?.OnExit(); // previous keyboard
                 SetProperty(ref keyboard, value);
                 keyboard?.OnEnter(); // new keyboard
@@ -187,6 +279,15 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     SelectionResultPoints = null; //The last selection result points cannot be valid if this has changed (window has moved or resized)
                 }
             }
+        }
+
+        public KeyValue PointToKeyValue(Point point)
+        {
+            if (pointToKeyValueMap == null)
+                return null;
+
+            var p = (Point?)point;
+            return p.ToPointAndKeyValue(pointToKeyValueMap)?.KeyValue;
         }
 
         public SelectionModes SelectionMode
@@ -340,7 +441,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                 }
             }
 
-            Action backaction = null;
+            Action backaction = null; 
             if (Settings.Default.ConversationOnlyMode)
             {
                 Settings.Default.StartupKeyboard = Enums.Keyboards.ConversationAlpha;
@@ -349,7 +450,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             {
                 Settings.Default.StartupKeyboard = Enums.Keyboards.ConversationConfirm;
             }
-            else 
+            else
             {
                 switch (Settings.Default.StartupKeyboard)
                 {
@@ -677,7 +778,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         public bool RaiseToastNotification(string title, string content, NotificationTypes notificationType, Action callback)
         {
             bool notificationRaised = false;
-            
+
             if (ToastNotification != null)
             {
                 ToastNotification(this, new NotificationEventArgs(title, content, notificationType, callback));

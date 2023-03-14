@@ -196,17 +196,13 @@ namespace JuliusSweetland.OptiKey.Pro
                 //Show the main window
                 mainWindow.Show();
 
-                LookToScrollOverlayWindow lookToScrollOverlayWindow = null;
+                foreach (var control in mainViewModel.AxisControls.Values)
+                {
+                    var overlay = new AxisOverlayWindow(control) { Owner = mainWindow };
+                }
+
                 OverlayWindow overlayWindow = null;
 
-                void TrySetLookToScrollOverlayWindow()
-                {
-                    if (Settings.Default.LookToScrollOverlayBoundsThickness > 0
-                        || Settings.Default.LookToScrollOverlayDeadzoneThickness > 0)
-                    {
-                        lookToScrollOverlayWindow = lookToScrollOverlayWindow ?? new LookToScrollOverlayWindow(mainViewModel);
-                    }
-                }
                 void TrySetOverlayWindow()
                 {
                     if (Settings.Default.GazeIndicatorStyle != GazeIndicatorStyles.None)
@@ -221,12 +217,9 @@ namespace JuliusSweetland.OptiKey.Pro
                 }
 
                 // Create the overlay window, but don't show it yet. It'll make itself visible when the conditions are right.
-                TrySetLookToScrollOverlayWindow();
                 TrySetOverlayWindow();
                 TrySetResizeMode();
 
-                Settings.Default.OnPropertyChanges(s => s.LookToScrollOverlayBoundsThickness).Subscribe(value => { TrySetLookToScrollOverlayWindow(); });
-                Settings.Default.OnPropertyChanges(s => s.LookToScrollOverlayDeadzoneThickness).Subscribe(value => { TrySetLookToScrollOverlayWindow(); });
                 Settings.Default.OnPropertyChanges(s => s.GazeIndicatorStyle).Subscribe(value => { TrySetOverlayWindow(); });
                 Settings.Default.OnPropertyChanges(s => s.EnableResizeWithMouse).Subscribe(value => { TrySetResizeMode(); });
 

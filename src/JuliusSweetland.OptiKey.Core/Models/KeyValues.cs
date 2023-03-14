@@ -66,7 +66,7 @@ namespace JuliusSweetland.OptiKey.Models
         //public static readonly KeyValue CombiningDevanagariVowelSignU = new KeyValue("\x0941");
         //public static readonly KeyValue CombiningDevanagariVowelSignUU = new KeyValue("\x0942");
         //public static readonly KeyValue CombiningDevanagariVowelSignVocalicR = new KeyValue("\x0943");
-        
+
         public static readonly KeyValue CombiningDiaeresisOrUmlautKey = new KeyValue("\x0308");
         public static readonly KeyValue CombiningDotAboveKey = new KeyValue("\x0307");
         public static readonly KeyValue CombiningDotAboveRightKey = new KeyValue("\x0358");
@@ -165,6 +165,12 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue LeftCtrlKey = new KeyValue(FunctionKeys.LeftCtrl);
         public static readonly KeyValue LeftShiftKey = new KeyValue(FunctionKeys.LeftShift);
         public static readonly KeyValue LeftWinKey = new KeyValue(FunctionKeys.LeftWin);
+        public static readonly KeyValue LeftJoystickKey = new KeyValue(FunctionKeys.LeftJoystick);
+        public static readonly KeyValue LegacyJoystickKey = new KeyValue(FunctionKeys.LegacyJoystick);
+        public static readonly KeyValue RightJoystickKey = new KeyValue(FunctionKeys.RightJoystick);
+        public static readonly KeyValue MouseJoystickKey = new KeyValue(FunctionKeys.MouseJoystick);
+        public static readonly KeyValue ScrollJoystickKey = new KeyValue(FunctionKeys.ScrollJoystick);
+        public static readonly KeyValue WasdJoystickKey = new KeyValue(FunctionKeys.WasdJoystick);
         public static readonly KeyValue LookToScrollActiveKey = new KeyValue(FunctionKeys.LookToScrollActive);
         public static readonly KeyValue LookToScrollBoundsKey = new KeyValue(FunctionKeys.LookToScrollBounds);
         public static readonly KeyValue LookToScrollIncrementKey = new KeyValue(FunctionKeys.LookToScrollIncrement);
@@ -298,7 +304,6 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue UrduPakistanKey = new KeyValue(FunctionKeys.UrduPakistan);
         public static readonly KeyValue WebBrowsingKeyboardKey = new KeyValue(FunctionKeys.WebBrowsingKeyboard);
         public static readonly KeyValue YesQuestionResultKey = new KeyValue(FunctionKeys.YesQuestionResult);
-
         private static readonly Dictionary<Languages, List<KeyValue>> multiKeySelectionKeys;
 
         static KeyValues()
@@ -451,7 +456,7 @@ namespace JuliusSweetland.OptiKey.Models
                     MultiKeySelectionIsOnKey
                 };
 
-                if(!Settings.Default.TypeDiacriticsAfterLetters)
+                if (!Settings.Default.TypeDiacriticsAfterLetters)
                 {
                     //By default TypeDiacriticsAfterLetters is false and the default behaviour
                     //is for the user to press down the diacritic key and then the letter.
@@ -491,7 +496,13 @@ namespace JuliusSweetland.OptiKey.Models
                     MouseMiddleDownUpKey,
                     MouseRightDownUpKey,
                     MultiKeySelectionIsOnKey,
-                    SleepKey
+                    SleepKey,
+                    LeftJoystickKey,
+                    LegacyJoystickKey,
+                    RightJoystickKey,
+                    MouseJoystickKey,
+                    ScrollJoystickKey,
+                    WasdJoystickKey,
                 };
 
                 if (Settings.Default.KeySelectionTriggerSource == TriggerSources.KeyboardKeyDownsUps)
@@ -646,6 +657,36 @@ namespace JuliusSweetland.OptiKey.Models
                     ? multiKeySelectionKeys[Settings.Default.KeyboardAndDictionaryLanguage]
                     : new List<KeyValue>();
             }
+        }
+
+        public static bool KeyCanBeLockedDown(KeyValue key)
+        {
+            if (KeyValues.KeysWhichCanBeLockedDown.Contains(key))
+                return true;
+
+            // If function key matches, we want a match for any string payload
+            if (key.FunctionKey != null)
+            {
+                KeyValue keyValueWithoutString = new KeyValue(key.FunctionKey, null);
+                return KeyValues.KeysWhichCanBeLockedDown.Contains(keyValueWithoutString);
+            }
+
+            return false;
+        }
+
+        public static bool KeyCanBePressedDown(KeyValue key)
+        {
+            if (KeyValues.KeysWhichCanBePressedDown.Contains(key))
+                return true;
+
+            // If function key matches, we want a match for any string payload
+            if (key.FunctionKey != null)
+            {
+                KeyValue keyValueWithoutString = new KeyValue(key.FunctionKey, null);
+                return KeyValues.KeysWhichCanBePressedDown.Contains(key);
+            }
+
+            return false;
         }
     }
 }
