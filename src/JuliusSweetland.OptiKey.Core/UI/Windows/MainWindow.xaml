@@ -10,6 +10,7 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
         xmlns:views="clr-namespace:JuliusSweetland.OptiKey.UI.Views"
         xmlns:resx="clr-namespace:JuliusSweetland.OptiKey.Properties"
         WindowStyle="None"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Title="OptiKey"
         Topmost="True"
@@ -17,56 +18,107 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
         ResizeMode="NoResize"
         Background="Transparent"
         Tag="{Binding RelativeSource={RelativeSource Mode=Self}}">
-    <!--Don't set the window's Width and Height properties on the window itself - they are loaded and applied from settings-->
-    <!--ResizeMode will be turned on when supported-->
-
-    <Window.ContextMenu>
-        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
-                     FlowDirection="{Binding Source={x:Static resx:Settings.Default}, Path=UiLanguageFlowDirection}">
-            <MenuItem Header="{x:Static resx:Resources.MANAGEMENT_CONSOLE}" 
-                      Command="{Binding ManagementWindowRequestCommand}">
-                <MenuItem.Icon>
-                    <Image Source="..\..\Resources\Icons\Management.ico" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{x:Static resx:Resources.TOGGLE_MANUAL_MODE}" 
-                      Command="{Binding ToggleManualModeCommand}">
-                <MenuItem.Icon>
-                    <Image Source="..\..\Resources\Icons\ManualMode.ico" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{x:Static resx:Resources.BACK_TITLE_CASE}" 
-                      Command="{Binding BackCommand}">
-                <MenuItem.Icon>
-                    <Image Source="..\..\Resources\Icons\Back.ico" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{x:Static resx:Resources.RESTART}" 
-                      Command="{Binding RestartCommand}">
-                <MenuItem.Icon>
-                    <Image Source="..\..\Resources\Icons\RestartIcon.ico"  RenderOptions.BitmapScalingMode="Fant" Stretch="Fill"  Width="32" Height="32"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{x:Static resx:Resources.QUIT_TITLE_CASE}" 
-                      Command="{Binding QuitCommand}">
-                <MenuItem.Icon>
-                    <Image Source="..\..\Resources\Icons\Quit.ico" />
-                </MenuItem.Icon>
-            </MenuItem>
-        </ContextMenu>
-    </Window.ContextMenu>
-
-    <i:Interaction.Triggers>
-        <interactionRequest:InteractionRequestTrigger 
-            SourceObject="{Binding Path=ManagementWindowRequest, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}">
-            <triggerActions:OpenManagementWindowAction />
-        </interactionRequest:InteractionRequestTrigger>
-    </i:Interaction.Triggers>
-
-    <views:MainView x:Name="MainView" />
-        <WindowChrome.WindowChrome>
-            <WindowChrome 
-                CaptionHeight="0"
-                ResizeBorderThickness="5" />
-        </WindowChrome.WindowChrome>
+  
+  <Window.Resources>
+    <ResourceDictionary Source="/OptiKey;component/Resources/Icons/KeySymbols.xaml" />
+  </Window.Resources>
+  
+  <Window.ContextMenu>
+    <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
+                 FlowDirection="{Binding Source={x:Static resx:Settings.Default}, Path=UiLanguageFlowDirection}">
+      <MenuItem Header="{x:Static resx:Resources.MANAGEMENT_CONSOLE}" Command="{Binding ManagementWindowRequestCommand}">
+        <MenuItem.Icon>
+          <Grid>
+            <Image Width="24" Height="24" Margin="6" VerticalAlignment="Center">
+              <Image.Source>
+                <DrawingImage>
+                  <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                     Geometry="{StaticResource ManagementConsoleIcon}"/>
+                  </DrawingImage.Drawing>
+                </DrawingImage>
+              </Image.Source>
+            </Image>
+          </Grid>
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static resx:Resources.TOGGLE_MANUAL_MODE}" Command="{Binding ToggleManualModeCommand}">
+        <MenuItem.Icon>
+          <Grid>
+            <Image Width="24" Height="24" Margin="6" VerticalAlignment="Center">
+              <Image.Source>
+                <DrawingImage>
+                  <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                     Geometry="{StaticResource HeadEyeIcon}"/>
+                  </DrawingImage.Drawing>
+                </DrawingImage>
+              </Image.Source>
+            </Image>
+          </Grid>
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static resx:Resources.BACK_TITLE_CASE}" Command="{Binding BackCommand}">
+        <MenuItem.Icon>
+          <Grid>
+            <Image Width="24" Height="24" Margin="6" VerticalAlignment="Center">
+              <Image.Source>
+                <DrawingImage>
+                  <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                     Geometry="{StaticResource BackIcon}"/>
+                  </DrawingImage.Drawing>
+                </DrawingImage>
+              </Image.Source>
+            </Image>
+          </Grid>
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static resx:Resources.RESTART}" Command="{Binding RestartCommand}">
+        <MenuItem.Icon>
+          <Grid>
+            <Image Width="24" Height="24" Margin="6" VerticalAlignment="Center">
+              <Image.Source>
+                <DrawingImage>
+                  <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                     Geometry="{StaticResource RestartIcon}"/>
+                  </DrawingImage.Drawing>
+                </DrawingImage>
+              </Image.Source>
+            </Image>
+          </Grid>
+        </MenuItem.Icon>
+      </MenuItem>
+      <MenuItem Header="{x:Static resx:Resources.QUIT_TITLE_CASE}" Command="{Binding QuitCommand}">
+        <MenuItem.Icon>
+          <Grid>
+            <Image Width="24" Height="24" Margin="6" VerticalAlignment="Center">
+              <Image.Source>
+                <DrawingImage>
+                  <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                     Geometry="{StaticResource QuitIcon}"/>
+                  </DrawingImage.Drawing>
+                </DrawingImage>
+              </Image.Source>
+            </Image>
+          </Grid>
+        </MenuItem.Icon>
+      </MenuItem>
+    </ContextMenu>
+  </Window.ContextMenu>
+  
+  <i:Interaction.Triggers>
+    <interactionRequest:InteractionRequestTrigger 
+      SourceObject="{Binding Path=ManagementWindowRequest, RelativeSource={RelativeSource AncestorType=Window}, Mode=OneWay}">
+      <triggerActions:OpenManagementWindowAction />
+    </interactionRequest:InteractionRequestTrigger>
+  </i:Interaction.Triggers>
+  
+  <views:MainView x:Name="MainView" />
+  
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="0"/>
+  </WindowChrome.WindowChrome>
 </Window>

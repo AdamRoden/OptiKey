@@ -4,27 +4,30 @@ using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Models;
 using JuliusSweetland.OptiKey.Properties;
 using JuliusSweetland.OptiKey.Services;
+using JuliusSweetland.OptiKey.Static;
 using JuliusSweetland.OptiKey.UI.Utilities;
 using JuliusSweetland.OptiKey.UI.ViewModels.Keyboards.Base;
+using JuliusSweetland.OptiKey.UI.Views.Keyboards.Common;
+using JuliusSweetland.OptiKey.UI.Windows;
 using log4net;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
-using JuliusSweetland.OptiKey.UI.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using ViewModelKeyboards = JuliusSweetland.OptiKey.UI.ViewModels.Keyboards;
-using JuliusSweetland.OptiKey.Static;
-using JuliusSweetland.OptiKey.UI.Views.Keyboards.Common;
 
 namespace JuliusSweetland.OptiKey.UI.Controls
 {
-    public class KeyboardHost : ContentControl
+    public class KeyboardHost : Canvas
     {
         #region Private member vars
 
@@ -36,6 +39,9 @@ namespace JuliusSweetland.OptiKey.UI.Controls
         private IDictionary<KeyValue, TimeSpanOverrides> overrideTimesByKey;
         private IWindowManipulationService windowManipulationService;
         private CompositeDisposable currentKeyboardKeyValueSubscriptions = new CompositeDisposable();
+        private ContentControl drawerView = new ContentControl();
+        private Storyboard storyboard = new Storyboard();
+        private bool isUpdating = false;
 
         #endregion
 
@@ -43,6 +49,8 @@ namespace JuliusSweetland.OptiKey.UI.Controls
 
         public KeyboardHost()
         {
+            KeyboardView = new ContentControl();
+            Children.Add(KeyboardView);
             Settings.Default.OnPropertyChanges(s => s.KeyboardAndDictionaryLanguage).Subscribe(_ => GenerateContent());
             Settings.Default.OnPropertyChanges(s => s.UiLanguage).Subscribe(_ => GenerateContent());
             Settings.Default.OnPropertyChanges(s => s.MouseKeyboardDockSize).Subscribe(_ => GenerateContent());
@@ -58,18 +66,54 @@ namespace JuliusSweetland.OptiKey.UI.Controls
 
             Loaded += OnLoaded;
 
-            var contentDp = DependencyPropertyDescriptor.FromProperty(ContentProperty, typeof(KeyboardHost));
-            if (contentDp != null)
-            {
-                contentDp.AddValueChanged(this, ContentChangedHandler);
-            }
-
             this.MouseEnter += this.OnMouseEnter;
         }
 
         #endregion
 
         #region Properties
+
+        public static readonly DependencyProperty KeyboardViewProperty =
+            DependencyProperty.Register("KeyboardView", typeof(ContentControl), typeof(KeyboardHost),
+                new PropertyMetadata(default(ContentControl)));
+
+        public ContentControl KeyboardView
+        {
+            get { return (ContentControl)GetValue(KeyboardViewProperty);}
+            set { SetValue(KeyboardViewProperty, value); }
+        }
+
+        public double ViewTop
+        {
+            get { return GetTop(KeyboardView); }
+            set { SetTop(KeyboardView, value);
+                LayoutChanged();
+            }
+        }
+
+        public double ViewLeft
+        {
+            get { return GetLeft(KeyboardView); }
+            set { SetLeft(KeyboardView, value);
+                LayoutChanged();
+            }
+        }
+
+        public double ViewWidth
+        {
+            get { return KeyboardView.Width; }
+            set { KeyboardView.Width = value;
+                LayoutChanged();
+            }
+        }
+
+        public double ViewHeight
+        {
+            get { return KeyboardView.Height; }
+            set { KeyboardView.Height = value;
+                LayoutChanged();
+            }
+        }
 
         public static readonly DependencyProperty KeyboardProperty =
             DependencyProperty.Register("Keyboard", typeof(IKeyboard), typeof(KeyboardHost),
@@ -79,19 +123,42 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                         var keyboardHost = o as KeyboardHost;
                         if (keyboardHost != null)
                         {
+                            if (keyboardHost.OpenDrawer != "None")
+                                keyboardHost.OpenDrawer = "None";
                             keyboardHost.GenerateContent();
                         }
                     }));
-        
+
         public IKeyboard Keyboard
         {
             get { return (IKeyboard)GetValue(KeyboardProperty); }
             set { SetValue(KeyboardProperty, value); }
         }
 
+        public static readonly DependencyProperty OpenDrawerProperty =
+            DependencyProperty.Register("OpenDrawer", typeof(string), typeof(KeyboardHost),
+                new PropertyMetadata(default(string),
+                    (o, args) =>
+                    {
+                        var keyboardHost = o as KeyboardHost;
+                        if (keyboardHost != null)
+                        {
+                            if (keyboardHost.OpenDrawer == "Bottom")
+                                keyboardHost.ShowDrawer();
+                            if (keyboardHost.OpenDrawer == "None")
+                                keyboardHost.HideDrawer();
+                        }
+                    }));
+
+        public string OpenDrawer
+        {
+            get { return (string)GetValue(OpenDrawerProperty); }
+            set { SetValue(OpenDrawerProperty, value); }
+        }
+
         public static readonly DependencyProperty PointToKeyValueMapProperty =
-            DependencyProperty.Register("PointToKeyValueMap", typeof(Dictionary<Rect, KeyValue>),
-                typeof(KeyboardHost), new PropertyMetadata(default(Dictionary<Rect, KeyValue>)));
+                DependencyProperty.Register("PointToKeyValueMap", typeof(Dictionary<Rect, KeyValue>),
+                    typeof(KeyboardHost), new PropertyMetadata(default(Dictionary<Rect, KeyValue>)));
 
         public Dictionary<Rect, KeyValue> PointToKeyValueMap
         {
@@ -116,7 +183,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
         {
             Log.Debug("KeyboardHost loaded.");
 
-            BuildPointToKeyMap();
+            BuildPointToKeyMap(KeyboardView);
 
             SubscribeToSizeChanges();
 
@@ -140,6 +207,68 @@ namespace JuliusSweetland.OptiKey.UI.Controls
         }
 
         #endregion
+
+        private void HideDrawer()
+        {
+            drawerView.RenderTransform = new TranslateTransform() { Y = 0 };
+            DoubleAnimation flyInAnimation = new DoubleAnimation
+            {
+                To = 150,
+                BeginTime = TimeSpan.FromSeconds(0.3),
+                Duration = TimeSpan.FromSeconds(0.5),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            storyboard = new Storyboard();
+            storyboard.Children.Add(flyInAnimation);
+            Storyboard.SetTargetProperty(flyInAnimation, new PropertyPath("RenderTransform.Y"));
+            storyboard.Completed += (OnHideCompleted);
+            storyboard.Begin(drawerView);
+        }
+
+        private void OnHideCompleted(object sender, EventArgs e)
+        {
+            BuildPointToKeyMap(KeyboardView);
+            if (Children.Contains(drawerView))
+                Children.Remove(drawerView);
+
+            storyboard.Completed -= OnHideCompleted;
+        }
+
+        private void ShowDrawer()
+        {
+            if (!Children.Contains(drawerView))
+                Children.Add(drawerView);
+            if (OpenDrawer == "Bottom")
+            {
+                var drawer = new ViewModelKeyboards.DrawerBottom();
+                drawerView.Width = 600;
+                drawerView.Height = 150;
+                drawerView.Content = drawer.GetContent();
+                drawerView.RenderTransform = new TranslateTransform() { Y = 150 };
+                SetLeft(drawerView, 500);
+                SetTop(drawerView, 1050);
+
+                DoubleAnimation flyInAnimation = new DoubleAnimation
+                {
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut }
+                };
+
+                storyboard = new Storyboard();
+                storyboard.Children.Add(flyInAnimation);
+                Storyboard.SetTargetProperty(flyInAnimation, new PropertyPath("RenderTransform.Y"));
+                storyboard.Completed += OnShowCompleted;
+                storyboard.Begin(drawerView);
+            }
+        }
+
+        private void OnShowCompleted(object sender, EventArgs e)
+        {
+            PointToKeyValueMap = null;
+            BuildPointToKeyMap(drawerView);
+            storyboard.Completed -= OnShowCompleted;
+        }
 
         #region Generate Content
 
@@ -172,10 +301,11 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                 //we get in a situation where the main thread maximizes the window before it gets resized by the dispatcher thread.
                 //My fix basically says, "don't try restoring the persisted state if we're navigating a maximized keyboard.""
                 if (!(Keyboard is ViewModelKeyboards.DynamicKeyboard)
-                    && !(Keyboard is ViewModelKeyboards.ConversationAlpha1)
-                    && !(Keyboard is ViewModelKeyboards.ConversationAlpha2)
-                    && !(Keyboard is ViewModelKeyboards.ConversationConfirm)
-                    && !(Keyboard is ViewModelKeyboards.ConversationNumericAndSymbols))
+                        && !(Keyboard is ViewModelKeyboards.DrawerHide)
+                        && !(Keyboard is ViewModelKeyboards.ConversationAlpha1)
+                        && !(Keyboard is ViewModelKeyboards.ConversationAlpha2)
+                        && !(Keyboard is ViewModelKeyboards.ConversationConfirm)
+                        && !(Keyboard is ViewModelKeyboards.ConversationNumericAndSymbols))
                 {
                     windowManipulationService.RestorePersistedState();
                 }
@@ -193,20 +323,26 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                 newContent = Keyboard.GetContent();
             }
 
-            Content = newContent;
+            KeyboardView.Content = newContent;
+
+            LayoutChanged();
         }
 
         #endregion
 
         #region Content Change Handler
 
-        private static void ContentChangedHandler(object sender, EventArgs e)
+        private void LayoutChanged()
         {
-            var keyboardHost = sender as KeyboardHost;
-            if (keyboardHost != null)
+            if (isUpdating)
+                return;
+
+            isUpdating = true;
+            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() =>
             {
-                keyboardHost.BuildPointToKeyMap();
-            }
+                isUpdating = false;
+                BuildPointToKeyMap(KeyboardView);
+            }));
         }
 
         private void OnMouseEnter(object sender, System.EventArgs e)
@@ -226,7 +362,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
 
         #region Build Point To Key Map
 
-        private void BuildPointToKeyMap()
+        private void BuildPointToKeyMap(FrameworkElement view)
         {
             Log.Info("Building PointToKeyMap.");
 
@@ -237,29 +373,28 @@ namespace JuliusSweetland.OptiKey.UI.Controls
             }
             currentKeyboardKeyValueSubscriptions = new CompositeDisposable();
 
-            var contentAsFrameworkElement = Content as FrameworkElement;
-            if (contentAsFrameworkElement != null)
+            if (view != null)
             {
-                if (contentAsFrameworkElement.IsLoaded)
+                if (view.IsLoaded)
                 {
-                    TraverseAllKeysAndBuildPointToKeyValueMap();
+                    TraverseAllKeysAndBuildPointToKeyValueMap(view);
                 }
                 else
                 {
                     RoutedEventHandler loaded = null;
                     loaded = (sender, args) =>
                     {
-                        TraverseAllKeysAndBuildPointToKeyValueMap();
-                        contentAsFrameworkElement.Loaded -= loaded;
+                        TraverseAllKeysAndBuildPointToKeyValueMap(view);
+                        view.Loaded -= loaded;
                     };
-                    contentAsFrameworkElement.Loaded += loaded;
+                    view.Loaded += loaded;
                 }
             }
         }
 
-        private void TraverseAllKeysAndBuildPointToKeyValueMap()
+        private void TraverseAllKeysAndBuildPointToKeyValueMap(FrameworkElement view)
         {
-            var allKeys = VisualAndLogicalTreeHelper.FindVisualChildren<Key>(this).ToList();
+            var allKeys = VisualAndLogicalTreeHelper.FindVisualChildren<Key>(view).ToList();
             var pointToKeyValueMap = new Dictionary<Rect, KeyValue>();
             var topLeftPoint = new Point(0, 0);
 
@@ -316,6 +451,14 @@ namespace JuliusSweetland.OptiKey.UI.Controls
             }
 
             Log.InfoFormat("PointToKeyValueMap rebuilt with {0} keys.", pointToKeyValueMap.Keys.Count);
+
+            //Add in menu drawer areas
+            var bounds = mainWindow.GetScreen().Bounds;
+            pointToKeyValueMap.Add(new Rect(.42 * bounds.Width, bounds.Height, .16 * bounds.Width, .16 * bounds.Height), KeyValues.DrawerBottomKey);
+            pointToKeyValueMap.Add(new Rect(-.16 * bounds.Width, .42 * bounds.Height, .16 * bounds.Width, .16 * bounds.Height), KeyValues.DrawerLeftKey);
+            pointToKeyValueMap.Add(new Rect(bounds.Width, .42 * bounds.Height, .16 * bounds.Width, .16 * bounds.Height), KeyValues.DrawerRightKey);
+            pointToKeyValueMap.Add(new Rect(.42 * bounds.Width, -.16 * bounds.Height, .16 * bounds.Width, .16 * bounds.Height), KeyValues.DrawerTopKey);
+
             PointToKeyValueMap = pointToKeyValueMap;
         }
 
@@ -333,7 +476,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                 .Subscribe(ep =>
                 {
                     Log.Info($"KeyboardHost SizeChanged event detected from {ep.EventArgs.PreviousSize} to {ep.EventArgs.NewSize}.");
-                    BuildPointToKeyMap();
+                    LayoutChanged();
                 });
         }
 
@@ -352,7 +495,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                 {
                     var window = ep.Sender as Window;
                     Log.Info($"Window's LocationChanged event detected. New window left:{window?.Left}, right:{(window?.Left ?? 0) + (window?.Width ?? 0)}, top:{window?.Top}, bottom:{(window?.Top ?? 0) + (window?.Height ?? 0)}.");
-                    BuildPointToKeyMap();
+                    LayoutChanged();
                 });
         }
 
@@ -370,7 +513,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                 .Subscribe(_ =>
                 {
                     Log.Info($"Window's StateChange event detected. New state: {parentWindow.WindowState}.");
-                    BuildPointToKeyMap();
+                    LayoutChanged();
                 });
         }
 

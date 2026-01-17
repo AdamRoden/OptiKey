@@ -75,29 +75,44 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ext\Bass\Bass.Net.dll</HintPath>
     </Reference>
-    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ControlzEx.4.4.0\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
     <Reference Include="EyeXFramework">
       <HintPath>..\..\ext\TobiiEyeXSdk\EyeXFramework.dll</HintPath>
     </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.2.4.11\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MicrosoftExpressionInteractions.3.0.40218.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="MouseKeyboardActivityMonitor, Version=4.0.5150.10665, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MouseKeyboardActivityMonitor.4.0.5150.10665\lib\net20\MouseKeyboardActivityMonitor.dll</HintPath>
     </Reference>
     <Reference Include="NBug, Version=1.2.0.0, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NBug.1.2.2\lib\net40-client\NBug.dll</HintPath>
+    </Reference>
+    <Reference Include="Nefarius.ViGEm.Client, Version=1.17.183.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Nefarius.ViGEm.Client.1.17.183\lib\net452\Nefarius.ViGEm.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -153,6 +168,7 @@
       <HintPath>..\..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -213,7 +229,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\TriggerTypes.cs" />
     <Compile Include="Enums\InteractorTypes.cs" />
+    <Compile Include="Enums\XboxAxes.cs" />
+    <Compile Include="Enums\XboxButtons.cs" />
     <Compile Include="Models\Interactor.cs" />
     <Compile Include="Models\InteractorProfileMap .cs" />
     <Compile Include="Models\Gamepads\GamepadButtonEvents.cs" />
@@ -279,6 +298,9 @@
     <Compile Include="Models\DynamicKeyboardFolder.cs" />
     <Compile Include="Models\Gamepads\XInputControllerState.cs" />
     <Compile Include="Models\Gamepads\XInputListener.cs" />
+    <Compile Include="Models\ScalingModels\IAxisScaling.cs" />
+    <Compile Include="Models\ScalingModels\AxisRegion.cs" />
+    <Compile Include="Models\ScalingModels\AxisScaling.cs" />
     <Compile Include="Models\XmlKeyCommand.cs" />
     <Compile Include="Models\EyeGestureShape.cs" />
     <Compile Include="Models\XmlEyeGestures.cs" />
@@ -420,6 +442,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Services\Translation\TranslationService.cs" />
+    <Compile Include="Services\ViewManipulationService.cs" />
     <Compile Include="Services\WindowManipulationService.cs" />
     <Compile Include="Services\KeyboardOutputService.cs" />
     <Compile Include="Services\PublishService.cs" />
@@ -433,6 +456,10 @@
     <Compile Include="UI\Behaviours\TextBoxBehaviours.cs" />
     <Compile Include="UI\Behaviours\KeyBehaviours.cs" />
     <Compile Include="UI\Behaviours\ScrollViewerBehaviours.cs" />
+    <Compile Include="UI\Controls\AxisHost.cs" />
+    <Compile Include="UI\Controls\GazePopup.xaml.cs">
+      <DependentUpon>GazePopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\KeyPopup.cs" />
     <Compile Include="UI\Controls\ProfileEditor.xaml.cs">
       <DependentUpon>ProfileEditor.xaml</DependentUpon>
@@ -450,13 +477,17 @@
       <DependentUpon>LayoutEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Controls\KeyboardView.cs" />
+    <Compile Include="UI\Controls\ResizableAdorner.cs" />
     <Compile Include="UI\ValueConverters\CompletionTimesValidation.cs" />
-    <Compile Include="UI\ValueConverters\HlsColor.cs" />
+    <Compile Include="UI\ValueConverters\HSLColor.cs" />
     <Compile Include="UI\ValueConverters\BoolToVisibilityConverter.cs" />
     <Compile Include="UI\ValueConverters\InvertedBoolToVisibilityConverter.cs" />
+    <Compile Include="UI\ViewModels\AxisControl.cs" />
     <Compile Include="UI\ValueConverters\MultiBoolToVisibilityConverter.cs" />
     <Compile Include="UI\ViewModels\Keyboards\Alpha3.cs" />
     <Compile Include="UI\ViewModels\Keyboards\ConversationAlpha3.cs" />
+    <Compile Include="UI\ViewModels\Keyboards\DrawerBottom.cs" />
+    <Compile Include="UI\ViewModels\Keyboards\DrawerHide.cs" />
     <Compile Include="UI\ViewModels\Keyboards\DynamicKeyboard.cs" />
     <Compile Include="UI\ViewModels\Keyboards\DynamicKeyboardSelector.cs" />
     <Compile Include="UI\Controls\ToastNotification.cs" />
@@ -503,7 +534,7 @@
     <Compile Include="UI\ValueConverters\WidthGreaterThanHeight.cs" />
     <Compile Include="UI\ValueConverters\LengthDividedBySpan.cs" />
     <Compile Include="UI\ValueConverters\SuggestionsPaged.cs" />
-    <Compile Include="UI\ViewModels\ILookToScrollOverlayViewModel.cs" />
+    <Compile Include="UI\ViewModels\IOverlayViewModel.cs" />
     <Compile Include="UI\ViewModels\Keyboards\Alpha2.cs" />
     <Compile Include="UI\ViewModels\Keyboards\CommuniKate.cs" />
     <Compile Include="UI\ViewModels\Keyboards\Voice.cs" />
@@ -535,10 +566,11 @@
     <Compile Include="UI\ViewModels\Keyboards\NumericAndSymbols1.cs" />
     <Compile Include="UI\ViewModels\Keyboards\Alpha1.cs" />
     <Compile Include="UI\ViewModels\Keyboards\Base\IKeyboard.cs" />
-    <Compile Include="UI\ViewModels\MainViewModel.LookToScroll.cs" />
+    <Compile Include="UI\ViewModels\MainViewModel.AxisControls.cs" />
     <Compile Include="UI\ViewModels\MainViewModel.ServiceEventHandlers.cs" />
     <Compile Include="UI\ViewModels\MainViewModel.cs" />
     <Compile Include="UI\ViewModels\ManagementViewModel.cs" />
+    <Compile Include="UI\ViewModels\Management\ThemeViewModel.cs" />
     <Compile Include="UI\ViewModels\Management\DictionaryViewModel.cs" />
     <Compile Include="UI\ViewModels\Management\LayoutViewModel.cs" />
     <Compile Include="UI\ViewModels\Management\GesturesViewModel.cs" />
@@ -555,6 +587,12 @@
     </Compile>
     <Compile Include="UI\Views\Keyboards\Common\ConversationConfirm.xaml.cs">
       <DependentUpon>ConversationConfirm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\Keyboards\Common\DrawerBottom.xaml.cs">
+      <DependentUpon>DrawerBottom.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Views\Keyboards\Common\DrawerHide.xaml.cs">
+      <DependentUpon>DrawerHide.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Views\Keyboards\Common\Voice.xaml.cs">
       <DependentUpon>Voice.xaml</DependentUpon>
@@ -909,6 +947,9 @@
     <Compile Include="UI\Controls\GestureEditor.xaml.cs">
       <DependentUpon>GestureEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Views\Management\ThemeView.xaml.cs">
+      <DependentUpon>ThemeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Views\Management\LayoutView.xaml.cs">
       <DependentUpon>LayoutView.xaml</DependentUpon>
     </Compile>
@@ -941,9 +982,6 @@
     </Compile>
     <Compile Include="UI\Windows\OverlayWindow.xaml.cs">
       <DependentUpon>OverlayWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Windows\LookToScrollOverlayWindow.xaml.cs">
-      <DependentUpon>LookToScrollOverlayWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Windows\ManagementWindow.xaml.cs">
       <DependentUpon>ManagementWindow.xaml</DependentUpon>
@@ -1481,6 +1519,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Themes\Colours\ColorPalette.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Custom_Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Themes\Android_Light.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1496,6 +1542,10 @@
     <Page Include="Resources\Themes\Colours\Android.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\GazePopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Controls\ProfileEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1522,6 +1572,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Views\Keyboards\Catalan\ConversationAlpha1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\Keyboards\Common\DrawerBottom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Views\Keyboards\Common\DrawerHide.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -2050,6 +2108,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI\Views\Management\ThemeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Views\Management\LayoutView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -2091,10 +2153,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Windows\OverlayWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\Windows\LookToScrollOverlayWindow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Windows\ManagementWindow.xaml">
@@ -2156,7 +2214,6 @@
       <Name>SingleInstance</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

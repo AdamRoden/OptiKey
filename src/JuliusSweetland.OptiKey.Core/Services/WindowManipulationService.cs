@@ -433,9 +433,9 @@ namespace JuliusSweetland.OptiKey.Services
             {
                 UnRegisterAppBar();
             }
+            savePreviousWindowState(windowState);
             saveWindowState(WindowStates.Hidden);
             ApplySavedState();
-            saveWindowState(windowState);
         }
 
         public bool GetPersistedState()
@@ -672,14 +672,8 @@ namespace JuliusSweetland.OptiKey.Services
             if (windowState != WindowStates.Maximised && windowState != WindowStates.Minimised && windowState != WindowStates.Hidden) return;
             saveWindowState(getPreviousWindowState());
             ApplySavedState();
-            savePreviousWindowState(windowState);
         }
 
-        public void RestoreSavedState()
-        {
-            Log.Info("RestoreSavedState called (applying saved state only)");
-            ApplySavedState();
-        }
 
         public void SetOpacity(double opacity)
         {

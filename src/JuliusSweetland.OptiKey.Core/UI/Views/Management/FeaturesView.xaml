@@ -18,6 +18,7 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
     <valueConverters:EnabledIfNotOverridden x:Key="EnabledIfNotOverridden" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
     <valueConverters:ColourNameToBrush x:Key="ColourNameToBrush" />
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}"/>
   </UserControl.Resources>
   <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
     <Grid>
@@ -58,44 +59,44 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
           <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_QUIT_KEYS_LABEL}" 
                                IsEnabled="{Binding Source='EnableQuitKeys', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="0" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="0" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='EnableQuitKeys', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding EnableQuitKeys, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnableQuitKeys, Mode=TwoWay}" />
           <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_ATTENTION_KEY_LABEL}" 
                                IsEnabled="{Binding Source='EnableAttentionKey', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="1" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="1" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='EnableAttentionKey', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding EnableAttentionKey, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnableAttentionKey, Mode=TwoWay}" />
           <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_COPY_SCRATCHPAD_KEY_LABEL}" 
                                IsEnabled="{Binding Source='EnableCopyAllScratchpadKey', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="2" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="2" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='EnableCopyAllScratchpadKey', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding EnableCopyAllScratchpadKey, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnableCopyAllScratchpadKey, Mode=TwoWay}" />
           <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_COMMUNIKATE_KEYBOARD_LAYOUT}"
                                IsEnabled="{Binding Source='EnableCommuniKateKeyboardLayout', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="3" Grid.Column="1"
+          <controls:ToggleSwitch Grid.Row="3" Grid.Column="1"
                               VerticalAlignment="Center" 
-                              IsChecked="{Binding EnableCommuniKateKeyboardLayout, Mode=TwoWay}" 
+                              Content="" IsOn="{Binding EnableCommuniKateKeyboardLayout, Mode=TwoWay}" 
                               IsEnabled="{Binding Source='EnableCommuniKateKeyboardLayout', Converter={StaticResource EnabledIfNotOverridden}}"/>
           <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.ALLOW_MULTIPLE_INSTANCES}"
                                IsEnabled="{Binding Source='AllowMultipleInstances', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" Visibility="Visible"/>
-          <CheckBox Grid.Row="4" Grid.Column="1"
+          <controls:ToggleSwitch Grid.Row="4" Grid.Column="1"
                               VerticalAlignment="Center"
-                              IsChecked="{Binding AllowMultipleInstances, Mode=TwoWay}" 
+                              Content="" IsOn="{Binding AllowMultipleInstances, Mode=TwoWay}" 
                               IsEnabled="{Binding Source='AllowMultipleInstances', Converter={StaticResource EnabledIfNotOverridden}}"/>
           <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_TRANSLATION_KEY_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="5" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="5" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='EnableTranslationKey', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding EnableTranslationKey, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnableTranslationKey, Mode=TwoWay}" />
           <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.TRANSLATION_TARGET_LANGUAGE_LABEL}"
                                VerticalAlignment="Center" Margin="5"
                                Visibility="{Binding EnableTranslationKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -109,10 +110,10 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
           <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_OVERRIDE_TRANSLATION_API_KEY_LABEL}" 
                                VerticalAlignment="Center" Margin="5"
                                Visibility="{Binding EnableTranslationKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
-          <CheckBox Grid.Row="7" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="7" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='EnableTranslationKey', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding EnableOverrideTranslationApiKey, Mode=TwoWay}"
+                              Content="" IsOn="{Binding EnableOverrideTranslationApiKey, Mode=TwoWay}"
                               Visibility="{Binding EnableTranslationKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <TextBlock Grid.Row="8" Grid.Column="0" 
                                Text="{x:Static resx:Resources.OVERRIDDEN_TRANSLATION_API_KEY_LABEL}" 
@@ -140,24 +141,24 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
           </TextBox>
           <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Resources.SHOW_SPLASH_SCREEN_ON_STARTUP_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="10" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="10" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding ShowSplashScreen, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding ShowSplashScreen, Mode=TwoWay}" />
           <TextBlock Grid.Row="11" Grid.Column="0" Text="{x:Static resx:Resources.CHECK_FOR_UPDATES_AT_STARTUP_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="11" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="11" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding CheckForUpdates, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding CheckForUpdates, Mode=TwoWay}" />
           <TextBlock Grid.Row="12" Grid.Column="0" Text="{x:Static resx:Resources.PUBLISH_VIRTUAL_KEY_CODES_FOR_CHARACTERS_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="12" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="12" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding PublishVirtualKeyCodesForCharacters, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding PublishVirtualKeyCodesForCharacters, Mode=TwoWay}" />
           <TextBlock Grid.Row="13" Grid.Column="0" Text="{x:Static resx:Resources.SUPPRESS_MODIFIERS_FOR_ALL_MOUSE_ACTIONS}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="13" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="13" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding SuppressModifierKeysForAllMouseActions, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding SuppressModifierKeysForAllMouseActions, Mode=TwoWay}" />
           <TextBlock Grid.Row="14" Grid.Column="0" Text="{x:Static resx:Resources.SUPPRESS_MODIFIERS_IN_MOUSE_KEYBOARD_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
             <TextBlock.Style>
@@ -170,11 +171,11 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                 </Style.Triggers>
               </Style>
             </TextBlock.Style></TextBlock>
-          <CheckBox Grid.Row="14" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="14" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding SuppressModifierKeysWhenInMouseKeyboard, Mode=TwoWay}">
-            <CheckBox.Style>
-              <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+                              Content="" IsOn="{Binding SuppressModifierKeysWhenInMouseKeyboard, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding SuppressModifierKeysForAllMouseActions}" Value="False">
@@ -182,25 +183,25 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                   </DataTrigger>
                 </Style.Triggers>
               </Style>
-            </CheckBox.Style>
-          </CheckBox>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
           <TextBlock Grid.Row="15" Grid.Column="0" Text="{x:Static resx:Resources.MAGNIFY_SUPPRESSED_FOR_SCROLLING_ACTIONS_LABEL}" 
                                IsEnabled="{Binding Source='MagnifySuppressedForScrollingActions', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="15" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="15" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='MagnifySuppressedForScrollingActions', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding MagnifySuppressedForScrollingActions, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding MagnifySuppressedForScrollingActions, Mode=TwoWay}" />
           <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.SUPPRESS_TRIGGER_WARNING}" 
                               VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="16" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="16" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding SuppressTriggerWarning, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding SuppressTriggerWarning, Mode=TwoWay}" />
           <TextBlock Grid.Row="17" Grid.Column="0" Text="{x:Static resx:Resources.DEBUGGING_MODE_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="17" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="17" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding Debug, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding Debug, Mode=TwoWay}" />
         </Grid>
       </GroupBox>
       <GroupBox Grid.Row="2" Header="{x:Static resx:Resources.LOOK_TO_SCROLL}">
@@ -237,26 +238,26 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
           <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.LOOK_TO_SCROLL_ENABLED_LABEL}" 
                      IsEnabled="{Binding Source='LookToScrollIsDefault', Converter={StaticResource EnabledIfNotOverridden}}"
                      VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="0" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="0" Grid.Column="1" 
                     VerticalAlignment="Center"
                     IsEnabled="{Binding Source='LookToScrollIsDefault', Converter={StaticResource EnabledIfNotOverridden}}"
-                    IsChecked="{Binding LookToScrollIsDefault, Mode=TwoWay}" />
+                    Content="" IsOn="{Binding LookToScrollIsDefault, Mode=TwoWay}" />
 
           <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.LOOK_TO_SCROLL_CENTRE_MOUSE_WHEN_ACTIVATED_LABEL}" 
                      VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+          <controls:ToggleSwitch Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                               VerticalAlignment="Center"
-                              IsChecked="{Binding LookToScrollCentreMouseWhenActivated, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding LookToScrollCentreMouseWhenActivated, Mode=TwoWay}" />
           <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.LOOK_TO_SCROLL_RESUME_AFTER_CHOOSING_POINT_FOR_MOUSE_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+          <controls:ToggleSwitch Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                               VerticalAlignment="Center"
-                              IsChecked="{Binding LookToScrollResumeAfterChoosingPointForMouse, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding LookToScrollResumeAfterChoosingPointForMouse, Mode=TwoWay}" />
           <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.LOOK_TO_SCROLL_DEACTIVATE_UPON_SWITCHING_KEYBOARDS_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+          <controls:ToggleSwitch Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
                               VerticalAlignment="Center"
-                              IsChecked="{Binding LookToScrollDeactivateUponSwitchingKeyboards, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding LookToScrollDeactivateUponSwitchingKeyboards, Mode=TwoWay}" />
           <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.LOOK_TO_SCROLL_BOUNDS_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
           <ComboBox Grid.Row="6" Grid.Column="1"
@@ -411,11 +412,11 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                 </Style.Triggers>
               </Style>
             </TextBlock.Style></TextBlock>
-          <CheckBox Grid.Row="7" Grid.Column="1"
+          <controls:ToggleSwitch Grid.Row="7" Grid.Column="1"
                               VerticalAlignment="Center"
-                              IsChecked="{Binding CommuniKateSpeakSelected, Mode=TwoWay}" >
-            <CheckBox.Style>
-              <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+                              Content="" IsOn="{Binding CommuniKateSpeakSelected, Mode=TwoWay}" >
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
                 <Setter Property="Visibility" Value="Visible" />
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding EnableCommuniKateKeyboardLayout}" Value="False">
@@ -423,8 +424,8 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                   </DataTrigger>
                 </Style.Triggers>
               </Style>
-            </CheckBox.Style>
-          </CheckBox>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
           <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Resources.COMMUNIKATE_SPEAK_SELECTED_VOLUME_LABEL}"
                                VerticalAlignment="Center" Margin="5" >
             <TextBlock.Style>
@@ -503,9 +504,9 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
           </Grid.RowDefinitions>
           <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_PLUGINS}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="0" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="0" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding EnablePlugins, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnablePlugins, Mode=TwoWay}" />
           <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.PLUGINS_LOCATION_LABEL}" 
                                Visibility="{Binding EnablePlugins, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}"
                                VerticalAlignment="Center" Margin="5" ></TextBlock>

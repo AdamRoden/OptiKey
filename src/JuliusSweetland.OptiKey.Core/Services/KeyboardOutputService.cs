@@ -13,6 +13,7 @@ using JuliusSweetland.OptiKey.Models;
 using JuliusSweetland.OptiKey.Native;
 using JuliusSweetland.OptiKey.Properties;
 using log4net;
+using Nefarius.ViGEm.Client.Targets.Xbox360;
 using Prism.Mvvm;
 
 namespace JuliusSweetland.OptiKey.Services
@@ -83,6 +84,15 @@ namespace JuliusSweetland.OptiKey.Services
         #endregion
 
         #region Methods - IKeyboardOutputService
+
+        public void XBoxProcessJoystick(string axis, float amount)
+        {
+            XboxAxes axisEnum;
+            if (Enum.TryParse(axis, true, out axisEnum))
+            {
+                publishService.XBoxProcessJoystick(axisEnum, amount);
+            }
+        }
 
         public void ProcessFunctionKey(FunctionKeys functionKey)
         {
@@ -521,13 +531,35 @@ namespace JuliusSweetland.OptiKey.Services
                     publishService.KeyDownUp(vkCode);
                 return;
             }
-            
+
+            // Is it a controller thumbstick press?
+            if (publishService.TryXBoxThumbPress(inKey, type))
+            {
+                return;
+            }
+
+            // Is it another controller output?
+            XboxButtons button;
+            if (Enum.TryParse(inKey, true, out button))
+            {
+                if (type == KeyPressKeyValue.KeyPressType.Press)
+                    publishService.XBoxButtonDown(button);
+                else if (type == KeyPressKeyValue.KeyPressType.Release)
+                    publishService.XBoxButtonUp(button);
+                else
+                {
+                    publishService.XBoxButtonDown(button);
+                    await Task.Delay(50);
+                    publishService.XBoxButtonUp(button);
+                }
+                return;
+            }
+
             // Otherwise a vanilla key press
             foreach (var chaKey in inKey)
             {
                 this.PressKey(chaKey, type);
             }
-        
         }
 
         private string CombineStringWithActiveDeadKeys(string input)
@@ -582,7 +614,7 @@ namespace JuliusSweetland.OptiKey.Services
                 Log.Debug("Suppressing auto space before this capture as the last text change was null or white space.");
                 suppressNextAutoSpace = true;
             }
-            else if(!Settings.Default.KeyboardAndDictionaryLanguage.SupportsAutoSpace()) //Language does not support auto space
+            else if (!Settings.Default.KeyboardAndDictionaryLanguage.SupportsAutoSpace()) //Language does not support auto space
             {
                 Log.DebugFormat("Suppressing auto space before this capture as the KeyboardAndDictionaryLanguage {0} does not support auto space.", Settings.Default.KeyboardAndDictionaryLanguage);
                 suppressNextAutoSpace = true;
@@ -606,7 +638,7 @@ namespace JuliusSweetland.OptiKey.Services
                 suppressNextAutoSpace = true;
             }
             else if (lastProcessedText.Length == 1
-                && !new[] {'.', '!', '?', ',', ':', ';', ')', ']', '}', '>'}.Contains(lastProcessedText.First())
+                && !new[] { '.', '!', '?', ',', ':', ';', ')', ']', '}', '>' }.Contains(lastProcessedText.First())
                 && !char.IsLetter(lastProcessedText.First()))
             {
                 //The current capture (which we know is a letter or multi-key capture) follows a single character
@@ -986,7 +1018,7 @@ namespace JuliusSweetland.OptiKey.Services
                     for (var index = 0; index < suggestionChars.Length; index++)
                     {
                         bool makeUppercase = false;
-                        if(nextWord || inProgressWord == null)
+                        if (nextWord || inProgressWord == null)
                         {
                             if (index == 0 && (leftShiftIsDown || leftShiftIsLockedDown)) //First character should be uppercase
                             {
@@ -1080,9 +1112,25 @@ namespace JuliusSweetland.OptiKey.Services
             }
         }
 
+        public void PressKey(VirtualKeyCode vkCode, KeyPressKeyValue.KeyPressType type)
+        {
+            // Simple fast method for potentially-continuous pressing
+            switch (type)
+            {
+                case KeyPressKeyValue.KeyPressType.Press:
+                    publishService.KeyDown(vkCode);
+                    break;
+                case KeyPressKeyValue.KeyPressType.Release:
+                    publishService.KeyUp(vkCode);
+                    break;
+                case KeyPressKeyValue.KeyPressType.PressAndRelease:
+                    publishService.KeyDownUp(vkCode);
+                    break;
+            }
+        }
+
         private void PressKey(char character, KeyPressKeyValue.KeyPressType type)
         {
-
             //Get keyboard layout of currently focused window
             IntPtr hWnd = PInvoke.GetForegroundWindow();
             int lpdwProcessId;
@@ -1133,17 +1181,19 @@ namespace JuliusSweetland.OptiKey.Services
                     releaseAlt = true;
                 }
 
-                switch (type)
+                PressKey((VirtualKeyCode)vkCode, type);
+
+                if (releaseShift)
                 {
-                    case KeyPressKeyValue.KeyPressType.Press:
-                        publishService.KeyDown((VirtualKeyCode)vkCode);
-                        break;
-                    case KeyPressKeyValue.KeyPressType.Release:
-                        publishService.KeyUp((VirtualKeyCode)vkCode);
-                        break;
-                    case KeyPressKeyValue.KeyPressType.PressAndRelease:
-                        publishService.KeyDownUp((VirtualKeyCode)vkCode);
-                        break;
+                    publishService.KeyUp(FunctionKeys.LeftShift.ToVirtualKeyCode().Value);
+                }
+                if (releaseCtrl)
+                {
+                    publishService.KeyUp(FunctionKeys.LeftCtrl.ToVirtualKeyCode().Value);
+                }
+                if (releaseAlt)
+                {
+                    publishService.KeyUp(FunctionKeys.LeftAlt.ToVirtualKeyCode().Value);
                 }
 
                 if (releaseShift)

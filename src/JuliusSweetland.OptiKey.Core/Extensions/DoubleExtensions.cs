@@ -19,5 +19,13 @@ namespace JuliusSweetland.OptiKey.Extensions
         {
             return Math.Min(Math.Max(value, lowerLimit), upperLimit);
         }
+        public static bool IsCloseTo(this double value1, double value2, double epsilon = 1e-7)
+        {
+            if (double.IsNaN(value1) || double.IsNaN(value2))
+            {
+                return double.IsNaN(value1) && double.IsNaN(value2);
+            }
+            return Math.Abs(value1 - value2) < epsilon;
+        }
     }
 }

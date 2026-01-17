@@ -99,10 +99,7 @@ namespace JuliusSweetland.OptiKey.Observables.PointSources
                                 return new Timestamped<Point>(new Point(0,0), new DateTimeOffset()); //Return useless point which will be filtered out
                             })
                             .Where(tp => tp.Value.X != 0 || tp.Value.Y != 0) //(0,0) coordinates indicate that GT hasn't been calibrated, or regex failed to parse datagram - suppress
-                            .Select(tp => Settings.Default.GazeSmoothingLevel > 0
-                                ? new Timestamped<Point>(kalmanFilter.Update(tp.Value), tp.Timestamp)
-                                : tp
-                        )
+                            .Select(tp => new Timestamped<Point>(kalmanFilter.Update(tp.Value), tp.Timestamp))
                             .DistinctUntilChanged(tp => tp.Value) //When GT loses the user's eyes it repeats the last value - suppress
                             .PublishLivePointsOnly(pointTtl)
                             .Select(tp => new Timestamped<PointAndKeyValue>(tp.Value.ToPointAndKeyValue(PointToKeyValueMap), tp.Timestamp)))

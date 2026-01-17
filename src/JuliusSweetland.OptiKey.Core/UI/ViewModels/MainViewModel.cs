@@ -1,9 +1,4 @@
 // Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Models;
@@ -11,14 +6,22 @@ using JuliusSweetland.OptiKey.Properties;
 using JuliusSweetland.OptiKey.Services;
 using JuliusSweetland.OptiKey.Services.Translation;
 using JuliusSweetland.OptiKey.Static;
+using JuliusSweetland.OptiKey.UI.Controls;
 using JuliusSweetland.OptiKey.UI.ViewModels.Keyboards;
 using JuliusSweetland.OptiKey.UI.ViewModels.Keyboards.Base;
 using log4net;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
-using System.Text;
-using System.Net.Http;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reactive.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace JuliusSweetland.OptiKey.UI.ViewModels
 {
@@ -39,30 +42,32 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         private readonly IKeyboardOutputService keyboardOutputService;
         private readonly IMouseOutputService mouseOutputService;
         private readonly IWindowManipulationService mainWindowManipulationService;
-        private readonly List<INotifyErrors> errorNotifyingServices; 
+        private readonly List<INotifyErrors> errorNotifyingServices;
         private readonly InteractionRequest<NotificationWithCalibrationResult> calibrateRequest;
         private readonly StringBuilder pendingErrorToastNotificationContent = new StringBuilder();
         private readonly TranslationService translationService;
 
         private EventHandler<int> inputServicePointsPerSecondHandler;
         private EventHandler<Tuple<Point, KeyValue>> inputServiceCurrentPositionHandler;
-        private EventHandler<Tuple<PointAndKeyValue, double>> inputServiceSelectionProgressHandler;
-        private EventHandler<PointAndKeyValue> inputServiceSelectionHandler;
-        private EventHandler<Tuple<List<Point>, KeyValue, List<string>>> inputServiceSelectionResultHandler;
+        private EventHandler<Tuple<TriggerTypes, PointAndKeyValue, double>> inputServiceSelectionProgressHandler;
+        private EventHandler<Tuple<TriggerTypes, PointAndKeyValue>> inputServiceSelectionHandler;
+        private EventHandler<Tuple<TriggerTypes, List<Point>, KeyValue, List<string>>> inputServiceSelectionResultHandler;
         private SelectionModes selectionMode;
         private Point currentPositionPoint;
         private KeyValue currentPositionKey;
         private Tuple<Point, double> pointSelectionProgress;
         private Dictionary<Rect, KeyValue> pointToKeyValueMap;
         private bool showCursor;
-        private bool showCrosshair;
-        private bool showMonical;
+        private bool showGaze;
         private bool showSuggestions;
         private bool suspendCommands;
         private bool manualModeEnabled;
         private Action<Point> nextPointSelectionAction;
         private Point? magnifyAtPoint;
         private Action<Point?> magnifiedPointSelectionAction;
+        private KeyValue keyValueForCurrentPointAction;
+        private KeyValue lastKeyValueExecuted;
+        Dictionary<KeyValue, KeyDownStates> lastKeyDownStates = new Dictionary<KeyValue, KeyDownStates>();
 
         #endregion
 
@@ -82,7 +87,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             IWindowManipulationService mainWindowManipulationService,
             List<INotifyErrors> errorNotifyingServices,
             string startKeyboardOverride = null)
-        { 
+        {
             this.audioService = audioService;
             this.calibrationService = calibrationService;
             this.dictionaryService = dictionaryService;
@@ -97,7 +102,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             this.errorNotifyingServices = errorNotifyingServices;
 
             calibrateRequest = new InteractionRequest<NotificationWithCalibrationResult>();
-            SelectionMode = SelectionModes.Key;
+            SelectionMode = SelectionModes.Keys;
 
             this.translationService = new TranslationService(new HttpClient());
 
@@ -107,10 +112,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             AttachKeyboardSupportsCollapsedDockListener(mainWindowManipulationService);
             AttachKeyboardSupportsSimulateKeyStrokesListener();
             AttachKeyboardSupportsMultiKeySelectionListener();
-            ShowCrosshair = Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Crosshair
-                || Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Scope;
-            ShowMonical = Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Monical
-                || Settings.Default.GazeIndicatorStyle == GazeIndicatorStyles.Scope;
+            InitializeAxisHandlers();
         }
 
         #endregion
@@ -125,15 +127,21 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
         #region Properties
 
+        public Dictionary<FunctionKeys, AxisControl> AxisControls;
         public IInputService InputService { get { return inputService; } }
         public ICapturingStateManager CapturingStateManager { get { return capturingStateManager; } }
         public IKeyboardOutputService KeyboardOutputService { get { return keyboardOutputService; } }
         public IKeyStateService KeyStateService { get { return keyStateService; } }
         public ISuggestionStateService SuggestionService { get { return suggestionService; } }
         public ICalibrationService CalibrationService { get { return calibrationService; } }
-
         public IWindowManipulationService MainWindowManipulationService { get { return mainWindowManipulationService; } }
 
+        private string openDrawer = "None";
+        public string OpenDrawer
+        {
+            get { return openDrawer; }
+            set { SetProperty(ref openDrawer, value); }
+        }
 
         private IKeyboard keyboard;
         public IKeyboard Keyboard
@@ -142,6 +150,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             set
             {
                 DeactivateLookToScrollUponSwitchingKeyboards();
+                if (keyboard is Minimised && !(value is Minimised))
+                {
+                    Log.Info("Restoring window size.");
+                    mainWindowManipulationService.Restore();
+                }
                 keyboard?.OnExit(); // previous keyboard
                 SetProperty(ref keyboard, value);
                 keyboard?.OnEnter(); // new keyboard
@@ -189,6 +202,15 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             }
         }
 
+        public KeyValue PointToKeyValue(Point point)
+        {
+            if (pointToKeyValueMap == null)
+                return null;
+
+            var p = (Point?)point;
+            return p.ToPointAndKeyValue(pointToKeyValueMap)?.KeyValue;
+        }
+
         public SelectionModes SelectionMode
         {
             get { return selectionMode; }
@@ -220,16 +242,10 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             set { SetProperty(ref showCursor, value); }
         }
 
-        public bool ShowCrosshair
+        public bool ShowGaze
         {
-            get { return showCrosshair; }
-            set { SetProperty(ref showCrosshair, value); }
-        }
-
-        public bool ShowMonical
-        {
-            get { return showMonical; }
-            set { SetProperty(ref showMonical, value); }
+            get { return showGaze; }
+            set { SetProperty(ref showGaze, value); }
         }
 
         public bool ShowSuggestions
@@ -349,7 +365,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             {
                 Settings.Default.StartupKeyboard = Enums.Keyboards.ConversationConfirm;
             }
-            else 
+            else
             {
                 switch (Settings.Default.StartupKeyboard)
                 {
@@ -358,25 +374,25 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     case Enums.Keyboards.ConversationNumericAndSymbols:
                     case Enums.Keyboards.Minimised:
                         backaction = () =>
-                            {
-                                windowManipulationService.Restore();
-                                windowManipulationService.ResizeDockToFull();
-                                Keyboard = new Menu(() => Keyboard = new Alpha1());
-                            };
+                        {
+                            windowManipulationService.Restore();
+                            windowManipulationService.ResizeDockToFull();
+                            Keyboard = new Menu(() => Keyboard = new Alpha1());
+                        };
                         break;
 
                     case Enums.Keyboards.CustomKeyboardFile:
                         backaction = () =>
-                            {
-                                Keyboard = new Menu(() => Keyboard = new Alpha1());
-                            };
+                        {
+                            Keyboard = new Menu(() => Keyboard = new Alpha1());
+                        };
                         break;
 
                     default:
                         backaction = () =>
-                            {
-                                Keyboard = new Alpha1();
-                            };
+                        {
+                            Keyboard = new Alpha1();
+                        };
                         break;
                 }
             }
@@ -442,7 +458,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
 
                 case Enums.Keyboards.Minimised:
                     mainWindowManipulationService.Minimise();
-                    var currentKeyboard = Keyboard; 
+                    var currentKeyboard = Keyboard;
                     Keyboard = new Minimised(() =>
                     {
                         mainWindowManipulationService.Restore();
@@ -451,7 +467,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     break;
 
                 case Enums.Keyboards.Mouse:
-                    Keyboard = new Mouse(backAction);
+                    Keyboard = new Keyboards.Mouse(backAction);
                     break;
 
                 case Enums.Keyboards.NumericAndSymbols1:
@@ -677,7 +693,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         public bool RaiseToastNotification(string title, string content, NotificationTypes notificationType, Action callback)
         {
             bool notificationRaised = false;
-            
+
             if (ToastNotification != null)
             {
                 ToastNotification(this, new NotificationEventArgs(title, content, notificationType, callback));
@@ -724,5 +740,101 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         }
 
         #endregion
+
+
+        private void ToggleDrawerBottom()
+        {
+            if (Keyboard is ViewModels.Keyboards.DrawerHide)
+            {
+                mainWindowManipulationService.Restore();
+                (Keyboard as BackActionKeyboard).BackAction();
+            }
+
+            if (OpenDrawer == "None")
+            {
+                OpenDrawer = "Bottom";
+
+                idleTimer.Interval = TimeSpan.FromSeconds(0.1); // Check more frequently than timeout
+                idleTimer.Tick += CheckIdleStatus;
+                idleTimer.Start();
+            }
+            else if (OpenDrawer == "Bottom")
+            {
+                OpenDrawer = "None";
+                idleTimer.Stop();
+            }
+        }
+        private void DrawerTop()
+        {
+        }
+        private void DrawerLeft()
+        {
+        }
+        private void DrawerHide()
+        {
+            var currentKeyboard = Keyboard;
+            Keyboard = new DrawerHide(() => { Keyboard = currentKeyboard; });
+            mainWindowManipulationService.Maximise(); //fullscreen but transparent
+            idleTimer.Stop();
+        }
+        private void DrawerSleep()
+        {
+            KeyStateService.ProgressKeyDownState(KeyValues.SleepKey);
+        }
+
+        private DispatcherTimer idleTimer = new DispatcherTimer();
+        private TimeSpan idleTimeout = TimeSpan.FromSeconds(3);
+        private DateTime lastActivityTime;
+
+        private void CheckIdleStatus(object sender, EventArgs e)
+        {
+            if (DateTime.Now - lastActivityTime >= idleTimeout)
+            {
+                OpenDrawer = "None";
+                idleTimer.Stop();
+            }
+        }
     }
 }
+
+/* Local Dictionary of settings
+ * SwitchKey - ContinuousKey - TimeToLockKey
+ * CompletionTimes can be used for all. (Repeat Time)
+ * CompletionAction[0], CompletionAction[1], CompletionAction[2], etc.
+ * KeyTypes:AlternateDown,AlternateUp,AlternateDownUp,MomentaryDown,MomentaryDown-AlternateDown-AlternateUp
+ * DownUp, DownUp, DownUp
+ * Down, LockDown or Release, Release
+ * 
+ * KeyPopup
+ * - Key only visible during dwell and can be placed offscreen
+ * KeyboardPopup
+ * - DynamicKeyboard that opens over the top rather than replacing the active keyboard
+ * - Close This Popup, Close All Popups
+ * - 
+ * 
+ * Theme Keyboard
+ * Keyboard Editor Keyboard
+ * ComboBox
+ * Setting - Description - [Selection[v]] 
+ * 
+ * Listbox
+ * [None]
+ * [Dot]
+ * [Ring]
+ * 
+ * 
+ * NumericUpDown
+ * Setting - Description - [-] [Value] [+]
+ * 
+ * Numpad
+ * Setting - Description
+ * [Entry] [Backspace]
+ * [7] [8] [9]
+ * [4] [5] [6]
+ * [1] [2] [3]
+ * [,] [0] [.]
+ * [Enter] [Clear]
+ * 
+ * ToggleButton
+ * 
+ */

@@ -70,6 +70,8 @@ namespace JuliusSweetland.OptiKey.Observables.TriggerSources
 
         public RunningStates State { get; set; }
 
+        public bool AllowPointsOverKeys { get; set; } // irrelevant for Key fixation
+
         public KeyEnabledStates KeyEnabledStates { get; set; }
 
         public IDictionary<KeyValue, TimeSpanOverrides> OverrideTimesByKey { get { return overrideTimesByKey; } }

@@ -81,6 +81,16 @@ namespace JuliusSweetland.OptiKey.Models
                     return false;
                 }
 
+                if (keyValue == KeyValues.DrawerBottomKey || keyValue == KeyValues.DrawerSleep)
+                {
+                    return true;
+                }
+
+                if (keyStateService.KeyDownStates[KeyValues.DrawerSleep].Value.IsDownOrLockedDown())
+                {
+                    return false;
+                }
+
                 //Key is not Sleep, but we are sleeping
                 //KeyFamily is the collection of parent KeyValues (Item1) and the KeyValues of child commands (Item2) 
                 //that could be locked down when the parent key is triggered. 

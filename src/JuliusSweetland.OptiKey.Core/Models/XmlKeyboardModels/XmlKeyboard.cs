@@ -124,7 +124,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 backgroundColor = string.IsNullOrWhiteSpace(value) ? null : value;
-                if (HlsColor.TryParse(value, out SolidColorBrush brush))
+                if (HSLColor.TryParse(value, out SolidColorBrush brush))
                 {
                     BackgroundBrush = brush;
                     OnPropertyChanged();
@@ -145,7 +145,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 borderColor = string.IsNullOrWhiteSpace(value) ? null : value;
-                if (HlsColor.TryParse(value, out SolidColorBrush brush))
+                if (HSLColor.TryParse(value, out SolidColorBrush brush))
                 {
                     BorderBrush = brush;
                     OnPropertyChanged();
@@ -265,7 +265,7 @@ namespace JuliusSweetland.OptiKey.Models
         {
             foreach (var interactor in Interactors)
             {
-                interactor.ProfileNames.Clear();
+                interactor.ProfileNames = new List<XmlElementValue>();
                 foreach (var p in interactor.Profiles.Where(x => x.IsMember && x.Profile.Name != "All").Select(y => y.Profile.Name))
                 {
                     interactor.ProfileNames.Add(new XmlElementValue() { Value = p });

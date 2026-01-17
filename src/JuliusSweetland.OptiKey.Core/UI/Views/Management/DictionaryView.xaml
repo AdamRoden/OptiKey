@@ -15,7 +15,8 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
         <CollectionViewSource x:Key="EntriesCollectionViewSource" Source="{Binding Entries}" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <valueConverters:BoolToCustomValues TrueValue="Collapsed" FalseValue="Visible" x:Key="BooleanToVisibilityConverterInverse" />
-    </UserControl.Resources>
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}"/>
+  </UserControl.Resources>
 
     <Grid>
 

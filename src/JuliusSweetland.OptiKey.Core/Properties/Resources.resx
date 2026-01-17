@@ -2488,4 +2488,7 @@ Magyar
   <data name="FILL_UP" xml:space="preserve">
     <value>Fill Up</value>
   </data>
+  <data name="HIDE" xml:space="preserve">
+    <value>Hide</value>
+  </data>
 </root>

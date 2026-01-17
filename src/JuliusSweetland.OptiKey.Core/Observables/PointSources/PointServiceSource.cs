@@ -54,10 +54,7 @@ namespace JuliusSweetland.OptiKey.Observables.PointSources
                             eh => pointGeneratingService.Point += eh,
                             eh => pointGeneratingService.Point -= eh)
                         .Where(_ => State == RunningStates.Running)
-                        .Select(ep => Settings.Default.GazeSmoothingLevel > 0
-                            ? new Timestamped<Point>(kalmanFilter.Update(ep.EventArgs.Value), ep.EventArgs.Timestamp)
-                            : ep.EventArgs
-                        )
+                        .Select(ep => new Timestamped<Point>(kalmanFilter.Update(ep.EventArgs.Value), ep.EventArgs.Timestamp))
                         .PublishLivePointsOnly(pointTtl)
                         .Select(tp => new Timestamped<PointAndKeyValue>(tp.Value.ToPointAndKeyValue(PointToKeyValueMap), tp.Timestamp))
                         .Replay(1) //Buffer one value for every subscriber so there is always a 'most recent' point available

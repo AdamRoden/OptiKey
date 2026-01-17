@@ -1,10 +1,9 @@
-﻿<!--
-Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
--->
+﻿<!--Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved-->
 <mahapps:MetroWindow x:Class="JuliusSweetland.OptiKey.UI.Windows.ManagementWindow"
                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:mahapps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                     xmlns:mgmt="clr-namespace:JuliusSweetland.OptiKey.UI.Views.Management"
                      xmlns:views="clr-namespace:JuliusSweetland.OptiKey.UI.Views"
                      xmlns:resx="clr-namespace:JuliusSweetland.OptiKey.Properties"
                      Title="{x:Static resx:Resources.MANAGEMENT_CONSOLE_TITLE}"
@@ -13,7 +12,39 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                      ResizeMode="CanResizeWithGrip"
                      SaveWindowPosition="True"
                      MinWidth="300" MinHeight="200"
-                     Icon="..\..\Resources\Icons\Management.ico"
                      FlowDirection="{Binding Source={x:Static resx:Settings.Default}, Path=UiLanguageFlowDirection}">
-    <views:ManagementView x:Name="ManagementView" />
+  <mahapps:MetroWindow.IconTemplate>
+    <DataTemplate>
+      <Viewbox Margin="4" Stretch="Uniform">
+        <Path Fill="{DynamicResource MahApps.Brushes.IdealForeground}"
+              Data="{StaticResource ManagementConsoleIcon}">
+          </Path>
+      </Viewbox>
+    </DataTemplate>
+  </mahapps:MetroWindow.IconTemplate>
+  <mahapps:MetroWindow.Flyouts>
+    <mahapps:FlyoutsControl>
+      <mahapps:Flyout Header="Theme"
+                        MinWidth="350"
+                        Background="{DynamicResource MahApps.Brushes.Flyout.Background}"
+                        DataContext="{Binding Settings}"
+                        IsModal="False" IsPinned="False"
+                        IsOpen="{Binding ElementName=ToggleButtonOpenTheme, Path=IsChecked, Mode=TwoWay}"
+                        Position="Right">
+        <mgmt:ThemeView />
+      </mahapps:Flyout>
+    </mahapps:FlyoutsControl>
+  </mahapps:MetroWindow.Flyouts>
+  
+  <mahapps:MetroWindow.RightWindowCommands>
+    <mahapps:WindowCommands>
+      <ToggleButton x:Name="ToggleButtonOpenTheme">
+        <Viewbox Margin="4" Stretch="Uniform">
+          <Path Fill="{DynamicResource MahApps.Brushes.IdealForeground}"
+                Data="{StaticResource ColorPaletteIcon}"/>
+        </Viewbox>
+      </ToggleButton>
+    </mahapps:WindowCommands>
+  </mahapps:MetroWindow.RightWindowCommands>
+  <views:ManagementView x:Name="ManagementView" />
 </mahapps:MetroWindow>

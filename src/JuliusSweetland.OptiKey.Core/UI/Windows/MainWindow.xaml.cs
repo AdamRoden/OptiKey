@@ -1,9 +1,4 @@
 ﻿// Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
-using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Models;
@@ -15,12 +10,14 @@ using JuliusSweetland.OptiKey.UI.ViewModels;
 using log4net;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace JuliusSweetland.OptiKey.UI.Windows
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -89,14 +86,7 @@ namespace JuliusSweetland.OptiKey.UI.Windows
                 Key = Key.Enter
             });
 
-            // Enable mouse drag on keyboard
-            MainView.KeyboardHost.MouseDown += OnMouseDown;
-
             Title = string.Format(Properties.Resources.WINDOW_TITLE, DiagnosticInfo.AssemblyVersion);
-
-            //Set the window size to 0x0 as this prevents a flicker where OptiKey would be displayed in the default position and then repositioned
-            Width = 0;
-            Height = 0;
 
             this.Closing += (sender, args) =>
             {
@@ -110,27 +100,6 @@ namespace JuliusSweetland.OptiKey.UI.Windows
         public IDictionary<string, List<KeyValue>> KeyValueByGroup { get { return keyStateService.KeyValueByGroup; } }
         public IDictionary<KeyValue, TimeSpanOverrides> OverrideTimesByKey  { get { return inputService.OverrideTimesByKey; } }
 
-        void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Don't take focus away from any existing toast notifications
-            if (MainView.ToastNotificationPopup.IsOpen)
-                return;
-
-            if (e.LeftButton == MouseButtonState.Pressed && Settings.Default.EnableResizeWithMouse)
-            {
-                // This prevents win7 aerosnap, which otherwise might snap to edges and expand unexpectedly
-                ResizeMode origResizeMode = this.ResizeMode;
-                this.ResizeMode = ResizeMode.NoResize;
-                this.UpdateLayout();
-                
-                DragMove();
-                
-                // Restore original resize mode 
-                this.ResizeMode = origResizeMode;
-                this.UpdateLayout();
-            }
-        }
-
         public IWindowManipulationService WindowManipulationService { get; set; }
 
         public InteractionRequest<NotificationWithServicesAndState> ManagementWindowRequest { get { return managementWindowRequest; } }
@@ -140,11 +109,11 @@ namespace JuliusSweetland.OptiKey.UI.Windows
         public ICommand BackCommand { get { return backCommand; } }
         public ICommand RestartCommand { get { return restartCommand; } }
 
-        private void RequestManagementWindow()
+        public void RequestManagementWindow()
         {
             Log.Info("RequestManagementWindow called.");
 
-            var modalManagementWindow = WindowManipulationService != null &&
+            var modalManagementWindow = WindowManipulationService != null && 
                                         WindowManipulationService.WindowState == WindowStates.Maximised;
 
             if (modalManagementWindow)

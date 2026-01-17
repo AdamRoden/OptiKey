@@ -7,6 +7,7 @@ using System.Text;
 using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Properties;
 using log4net;
+using SharpDX;
 
 namespace JuliusSweetland.OptiKey.Extensions
 {
@@ -347,6 +348,18 @@ namespace JuliusSweetland.OptiKey.Extensions
             }
 
             return null;
+        }
+
+        public static string RemoveWhitespace(this string s)
+        {
+            return new string(s.ToCharArray()
+                .Where(c => !Char.IsWhiteSpace(c))
+                .ToArray());
+        }
+
+        public static double? ToNullDouble(this string s)
+        {
+            return double.TryParse(s, out double result) ? (double?)result : null;
         }
 
         public static string ToString(this List<string> strings, string nullValue)

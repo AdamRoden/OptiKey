@@ -66,7 +66,7 @@ namespace JuliusSweetland.OptiKey.Models
         //public static readonly KeyValue CombiningDevanagariVowelSignU = new KeyValue("\x0941");
         //public static readonly KeyValue CombiningDevanagariVowelSignUU = new KeyValue("\x0942");
         //public static readonly KeyValue CombiningDevanagariVowelSignVocalicR = new KeyValue("\x0943");
-        
+
         public static readonly KeyValue CombiningDiaeresisOrUmlautKey = new KeyValue("\x0308");
         public static readonly KeyValue CombiningDotAboveKey = new KeyValue("\x0307");
         public static readonly KeyValue CombiningDotAboveRightKey = new KeyValue("\x0358");
@@ -107,6 +107,12 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue Diacritic1KeyboardKey = new KeyValue(FunctionKeys.Diacritic1Keyboard);
         public static readonly KeyValue Diacritic2KeyboardKey = new KeyValue(FunctionKeys.Diacritic2Keyboard);
         public static readonly KeyValue Diacritic3KeyboardKey = new KeyValue(FunctionKeys.Diacritic3Keyboard);
+        public static readonly KeyValue DrawerBottomKey = new KeyValue(FunctionKeys.DrawerBottom);
+        public static readonly KeyValue DrawerLeftKey = new KeyValue(FunctionKeys.DrawerLeft);
+        public static readonly KeyValue DrawerRightKey = new KeyValue(FunctionKeys.DrawerRight);
+        public static readonly KeyValue DrawerTopKey = new KeyValue(FunctionKeys.DrawerTop);
+        public static readonly KeyValue DrawerHide = new KeyValue(FunctionKeys.DrawerHide);
+        public static readonly KeyValue DrawerSleep = new KeyValue(FunctionKeys.DrawerSleep);
         public static readonly KeyValue DutchBelgiumKey = new KeyValue(FunctionKeys.DutchBelgium);
         public static readonly KeyValue DutchNetherlandsKey = new KeyValue(FunctionKeys.DutchNetherlands);
         public static readonly KeyValue DynamicKeyboardKey = new KeyValue(FunctionKeys.DynamicKeyboard);
@@ -148,6 +154,7 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue FinnishFinlandKey = new KeyValue(FunctionKeys.FinnishFinland);
         public static readonly KeyValue FrenchFranceKey = new KeyValue(FunctionKeys.FrenchFrance);
         public static readonly KeyValue FrenchCanadaKey = new KeyValue(FunctionKeys.FrenchCanada);
+        public static readonly KeyValue GazeIndicatorActiveKey = new KeyValue(FunctionKeys.GazeIndicatorActive);
         public static readonly KeyValue GeorgianGeorgiaKey = new KeyValue(FunctionKeys.GeorgianGeorgia);
         public static readonly KeyValue GermanGermanyKey = new KeyValue(FunctionKeys.GermanGermany);
         public static readonly KeyValue GreekGreeceKey = new KeyValue(FunctionKeys.GreekGreece);
@@ -165,11 +172,18 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue LeftCtrlKey = new KeyValue(FunctionKeys.LeftCtrl);
         public static readonly KeyValue LeftShiftKey = new KeyValue(FunctionKeys.LeftShift);
         public static readonly KeyValue LeftWinKey = new KeyValue(FunctionKeys.LeftWin);
+        public static readonly KeyValue LeftJoystickKey = new KeyValue(FunctionKeys.LeftJoystick);
+        public static readonly KeyValue LegacyJoystickKey = new KeyValue(FunctionKeys.LegacyJoystick);
+        public static readonly KeyValue RightJoystickKey = new KeyValue(FunctionKeys.RightJoystick);
+        public static readonly KeyValue MouseJoystickKey = new KeyValue(FunctionKeys.MouseJoystick);
+        public static readonly KeyValue ScrollJoystickKey = new KeyValue(FunctionKeys.ScrollJoystick);
+        public static readonly KeyValue WasdJoystickKey = new KeyValue(FunctionKeys.WasdJoystick);
         public static readonly KeyValue LookToScrollActiveKey = new KeyValue(FunctionKeys.LookToScrollActive);
         public static readonly KeyValue LookToScrollBoundsKey = new KeyValue(FunctionKeys.LookToScrollBounds);
         public static readonly KeyValue LookToScrollIncrementKey = new KeyValue(FunctionKeys.LookToScrollIncrement);
         public static readonly KeyValue LookToScrollModeKey = new KeyValue(FunctionKeys.LookToScrollMode);
         public static readonly KeyValue LookToScrollSpeedKey = new KeyValue(FunctionKeys.LookToScrollSpeed);
+        public static readonly KeyValue ManagemetConsoleKey = new KeyValue(FunctionKeys.ManagementConsole);
         public static readonly KeyValue MenuKey = new KeyValue(FunctionKeys.Menu);
         public static readonly KeyValue MenuKeyboardKey = new KeyValue(FunctionKeys.MenuKeyboard);
         public static readonly KeyValue MinimiseKey = new KeyValue(FunctionKeys.Minimise);
@@ -227,6 +241,7 @@ namespace JuliusSweetland.OptiKey.Models
         public static readonly KeyValue NumericAndSymbols2KeyboardKey = new KeyValue(FunctionKeys.NumericAndSymbols2Keyboard);
         public static readonly KeyValue NumericAndSymbols3KeyboardKey = new KeyValue(FunctionKeys.NumericAndSymbols3Keyboard);
         public static readonly KeyValue PersianIranKey = new KeyValue(FunctionKeys.PersianIran);
+        public static readonly KeyValue PluginKey = new KeyValue(FunctionKeys.Plugin);
         public static readonly KeyValue PgDnKey = new KeyValue(FunctionKeys.PgDn);
         public static readonly KeyValue PgUpKey = new KeyValue(FunctionKeys.PgUp);
         public static readonly KeyValue PhysicalKeysKeyboardKey = new KeyValue(FunctionKeys.PhysicalKeysKeyboard);
@@ -301,34 +316,30 @@ namespace JuliusSweetland.OptiKey.Models
 
         private static readonly Dictionary<Languages, List<KeyValue>> multiKeySelectionKeys;
 
-        static KeyValues()
+        private static List<KeyValue> ToKeyValueCharList(this string allChars)
         {
-            var defaultList = "abcdefghijklmnopqrstuvwxyz"
-                .ToCharArray()
+            return allChars.ToCharArray()
                 .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
                 .ToList();
+        }
+
+        static KeyValues()
+        {
+            var defaultList = "abcdefghijklmnopqrstuvwxyz".ToKeyValueCharList();
 
             multiKeySelectionKeys = new Dictionary<Languages, List<KeyValue>>
             {
                 { Languages.CatalanSpain, "abcdefghijklmnopqrstuvwxyzñç"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.CroatianCroatia, "abcčćdđefghijklmnopqrsštuvwxyzž"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
-                 { Languages.CzechCzechRepublic, "aábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzž"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                { Languages.CzechCzechRepublic, "aábcčdďeéěfghiíjklmnňoópqrřsštťuúůvwxyýzž"
+                                                .ToKeyValueCharList()
                 },
                 { Languages.DanishDenmark, "abcdefghijklmnopqrstuvwxyzæøå"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.DutchBelgium, defaultList },
                 { Languages.DutchNetherlands, defaultList },
@@ -336,106 +347,88 @@ namespace JuliusSweetland.OptiKey.Models
                 { Languages.EnglishUK, defaultList },
                 { Languages.EnglishUS, defaultList },
                 { Languages.FinnishFinland, "abcdefghijklmnopqrstuvwxyzåäö"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.FrenchFrance, "abcdefghijklmnopqrstuvwxyzçé"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.FrenchCanada, "abcdefghijklmnopqrstuvwxyzçé"
-                    .ToCharArray()
-                    .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                    .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.GermanGermany, "abcdefghijklmnopqrstuvwxyzß"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.GeorgianGeorgia, "აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.GreekGreece, "ασδφγηξκλ;ςερτυθιοπζχψωβνμ"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.HebrewIsrael, "אבגדהוזחטיכלמנסעפצקרשת"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.HungarianHungary,"aábccsddzdzseéfggyhiíjkllymnnyoóöőpqrssztyuúüűvwxyzzs"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.ItalianItaly, "abcdefghijklmnopqrstuvwxyzî"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.PersianIran, "ضصثقفغعهخحجچشسیبلاتنمکگظطژزرذدوپآ"
-                    .ToCharArray()
-                    .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                    .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.PolishPoland, "aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.PortuguesePortugal, "abcdefghijklmnopqrstuvwxyzçà"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue(c.ToString(CultureInfo.InvariantCulture)))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.RussianRussia, "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList() },
+                                                .ToKeyValueCharList()
+                },
                 { Languages.SerbianSerbia, "абвгдђежзијклљмнњопрстћуфхцчџш"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.SlovakSlovakia, "aáäbcčdďeéfghchiíjklĺľmnoóôpqrŕsštťuúvwxyýzž"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.SlovenianSlovenia, "abcčćdđefghijklmnopqrsštuvwxyzž"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.SpanishSpain, "abcdefghijklmnopqrstuvwxyzñ"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.TurkishTurkey, "abcçdefgğhiıjklmnoöprsştuüvyz"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.UkrainianUkraine, "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя"
-                                                .ToCharArray()
-                                                .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                                                .ToList()
+                                                .ToKeyValueCharList()
                 },
                 { Languages.UrduPakistan, "طصھدٹپتبجحمورنلہاکیقفےسشغعظضذڈثۃھچخژزڑںءآگاً"
-                    .ToCharArray()
-                    .Select(c => new KeyValue (c.ToString(CultureInfo.InvariantCulture) ))
-                    .ToList()
+                                                .ToKeyValueCharList()
                 }
             };
         }
+
+        public static List<KeyValue> MutuallyExclusiveMouseActionKeys
+        {
+            get
+            {
+                var keys = new List<KeyValue>
+                {
+                    MouseMoveAndLeftClickKey,
+                    MouseMoveAndRightClickKey,
+                    MouseMoveAndLeftDoubleClickKey,
+                    MouseMoveAndMiddleClickKey,
+                    MouseMoveAndScrollToTopKey,
+                    MouseMoveAndScrollToBottomKey,
+                    MouseMoveAndScrollToLeftKey,
+                    MouseMoveAndScrollToRightKey,
+                    MouseMoveToKey,
+                };
+                return keys;
+            }
+        }
+
 
         public static List<KeyValue> KeysWhichCanBePressedDown
         {
@@ -451,7 +444,9 @@ namespace JuliusSweetland.OptiKey.Models
                     MultiKeySelectionIsOnKey
                 };
 
-                if(!Settings.Default.TypeDiacriticsAfterLetters)
+                keys = keys.Concat(MutuallyExclusiveMouseActionKeys).ToList();
+
+                if (!Settings.Default.TypeDiacriticsAfterLetters)
                 {
                     //By default TypeDiacriticsAfterLetters is false and the default behaviour
                     //is for the user to press down the diacritic key and then the letter.
@@ -479,6 +474,7 @@ namespace JuliusSweetland.OptiKey.Models
             {
                 var keys = new List<KeyValue>
                 {
+                    GazeIndicatorActiveKey,
                     LeftAltKey,
                     LeftCtrlKey,
                     LeftShiftKey,
@@ -491,8 +487,17 @@ namespace JuliusSweetland.OptiKey.Models
                     MouseMiddleDownUpKey,
                     MouseRightDownUpKey,
                     MultiKeySelectionIsOnKey,
-                    SleepKey
+                    SleepKey,
+                    DrawerSleep,
+                    LeftJoystickKey,
+                    LegacyJoystickKey,
+                    RightJoystickKey,
+                    MouseJoystickKey,
+                    ScrollJoystickKey,
+                    WasdJoystickKey,
                 };
+
+                keys = keys.Concat(MutuallyExclusiveMouseActionKeys).ToList();
 
                 if (Settings.Default.KeySelectionTriggerSource == TriggerSources.KeyboardKeyDownsUps)
                 {
@@ -645,6 +650,86 @@ namespace JuliusSweetland.OptiKey.Models
                 return multiKeySelectionKeys.ContainsKey(Settings.Default.KeyboardAndDictionaryLanguage)
                     ? multiKeySelectionKeys[Settings.Default.KeyboardAndDictionaryLanguage]
                     : new List<KeyValue>();
+            }
+        }
+
+
+        public static List<FunctionKeys> FunctionKeysForRepeatableActions
+        {
+            get
+            {
+                var keys = new List<FunctionKeys>
+                {
+                    FunctionKeys.MouseDrag,
+                    FunctionKeys.MouseKeyboard,
+                    FunctionKeys.MouseLeftClick,
+                    FunctionKeys.MouseLeftDoubleClick,
+                    FunctionKeys.MouseLeftDownUp,
+                    FunctionKeys.MouseMiddleClick,
+                    FunctionKeys.MouseMiddleDownUp,
+                    FunctionKeys.MouseMoveAmountInPixels,
+                    FunctionKeys.MouseMoveAndLeftClick,
+                    FunctionKeys.MouseMoveAndLeftDoubleClick,
+                    FunctionKeys.MouseMoveAndMiddleClick,
+                    FunctionKeys.MouseMoveAndRightClick,
+                    FunctionKeys.MouseMoveTo,
+                    FunctionKeys.MouseMoveToBottom,
+                    FunctionKeys.MouseMoveToLeft,
+                    FunctionKeys.MouseMoveToRight,
+                    FunctionKeys.MouseMoveToTop,
+                    FunctionKeys.MouseMoveAndScrollToBottom,
+                    FunctionKeys.MouseMoveAndScrollToLeft,
+                    FunctionKeys.MouseMoveAndScrollToRight,
+                    FunctionKeys.MouseMoveAndScrollToTop,
+                    FunctionKeys.MouseRightClick,
+                    FunctionKeys.MouseRightDownUp,
+                };
+                return keys;
+            }
+        }
+
+        public static List<FunctionKeys> FunctionKeysUsingPointSource
+        {
+            get
+            {
+                var keys = new List<FunctionKeys>
+                {
+                    FunctionKeys.LookToScrollActive,
+                    FunctionKeys.LookToScrollBounds,
+                    FunctionKeys.LookToScrollIncrement,
+                    FunctionKeys.LookToScrollMode,
+                    FunctionKeys.LookToScrollSpeed,
+                    FunctionKeys.MouseDrag,
+                    FunctionKeys.MouseKeyboard,
+                    FunctionKeys.MouseLeftClick,
+                    FunctionKeys.MouseLeftDoubleClick,
+                    FunctionKeys.MouseLeftDownUp,
+                    FunctionKeys.MouseMagneticCursor,
+                    FunctionKeys.MouseMiddleClick,
+                    FunctionKeys.MouseMiddleDownUp,
+                    FunctionKeys.MouseMoveAmountInPixels,
+                    FunctionKeys.MouseMoveAndLeftClick,
+                    FunctionKeys.MouseMoveAndLeftDoubleClick,
+                    FunctionKeys.MouseMoveAndMiddleClick,
+                    FunctionKeys.MouseMoveAndRightClick,
+                    FunctionKeys.MouseMoveTo,
+                    FunctionKeys.MouseMoveToBottom,
+                    FunctionKeys.MouseMoveToLeft,
+                    FunctionKeys.MouseMoveToRight,
+                    FunctionKeys.MouseMoveToTop,
+                    FunctionKeys.MouseRightClick,
+                    FunctionKeys.MouseRightDownUp,
+                    FunctionKeys.MouseScrollAmountInClicks,
+                    FunctionKeys.MouseMoveAndScrollToBottom,
+                    FunctionKeys.MouseMoveAndScrollToLeft,
+                    FunctionKeys.MouseMoveAndScrollToRight,
+                    FunctionKeys.MouseMoveAndScrollToTop,
+                    FunctionKeys.MouseScrollToTop,
+                    FunctionKeys.MouseScrollToBottom,
+                    FunctionKeys.MouseMagnifier,
+                    FunctionKeys.RepeatLastMouseAction,
+                };
+                return keys;
             }
         }
     }

@@ -6,6 +6,7 @@ namespace JuliusSweetland.OptiKey.Enums
         Action,
         ChangeKeyboard,
         KeyDown,
+        KeyPress,
         KeyToggle,
         KeyUp,
         Loop,

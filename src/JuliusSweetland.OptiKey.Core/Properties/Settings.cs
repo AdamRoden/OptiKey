@@ -32,6 +32,167 @@ namespace JuliusSweetland.OptiKey.Properties {
             defaultInstance = instance;
         }
 
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public int KeyBorderThickness
+        {
+            get
+            {
+                return ((int)(this["KeyBorderThickness"]));
+            }
+            set
+            {
+                this["KeyBorderThickness"] = value;
+            }
+        }
+
+            [global::System.Configuration.UserScopedSettingAttribute()]
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.Configuration.DefaultSettingValueAttribute("1")]
+            [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+            public int KeyCornerRadius
+        {
+            get
+            {
+                return ((int)(this["KeyCornerRadius"]));
+            }
+            set
+            {
+                this["KeyCornerRadius"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF777777")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color KeySelectionFlashColor
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["KeySelectionFlashColor"]));
+            }
+            set
+            {
+                this["KeySelectionFlashColor"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF008A00")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color AppAccentColor
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["AppAccentColor"]));
+            }
+            set
+            {
+                this["AppAccentColor"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color DwellBorderColor
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["DwellBorderColor"]));
+            }
+            set
+            {
+                this["DwellBorderColor"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color DwellProgressColor
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["DwellProgressColor"]));
+            }
+            set
+            {
+                this["DwellProgressColor"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color KeyForeground
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["KeyForeground"]));
+            }
+            set
+            {
+                this["KeyForeground"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF008D00")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color KeyDownForeground
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["KeyDownForeground"]));
+            }
+            set
+            {
+                this["KeyDownForeground"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF111111")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color KeyBackground
+        {
+            get
+            {
+                return ((global::System.Windows.Media.Color)(this["KeyBackground"]));
+            }
+            set
+            {
+                this["KeyBackground"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Light")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public string AppTheme
+        {
+            get
+            {
+                return ((string)(this["AppTheme"]));
+            }
+            set
+            {
+                this["AppTheme"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Insert")]

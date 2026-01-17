@@ -142,6 +142,12 @@ namespace JuliusSweetland.OptiKey.Services
             publishService.ScrollMouseWheelRight(clicks);
         }
 
+        public void MoveBy(Point point)
+        {
+            Log.DebugFormat("Moving cursor by '{0}' pixels", point);
+            publishService.MouseMoveBy(point);
+        }
+
         public void MoveTo(Point point)
         {
             Log.DebugFormat("Moving cursor to point '{0}'", point);

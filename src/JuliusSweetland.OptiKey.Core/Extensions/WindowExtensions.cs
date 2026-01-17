@@ -8,7 +8,7 @@ namespace JuliusSweetland.OptiKey.Extensions
     {
         public static System.Windows.Forms.Screen GetScreen(this Window window)
         {
-            return System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(window).Handle);
+            return System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(window).EnsureHandle());
         }
     }
 }

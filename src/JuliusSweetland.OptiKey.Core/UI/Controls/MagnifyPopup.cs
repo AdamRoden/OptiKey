@@ -1,19 +1,21 @@
 ﻿// Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
-using System;
-using System.Drawing;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
+using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Properties;
 using JuliusSweetland.OptiKey.UI.Utilities;
 using JuliusSweetland.OptiKey.UI.ViewModels;
 using log4net;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using System.Windows.Media;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
-using JuliusSweetland.OptiKey.Enums;
 
 namespace JuliusSweetland.OptiKey.UI.Controls
 {
@@ -82,7 +84,7 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                             Log.ErrorFormat("Caught exception: {0}", ex);
 
                             //Reset as much as possible
-                            mainViewModel.SelectionMode = SelectionModes.Key;
+                            mainViewModel.SelectionMode = SelectionModes.Keys;
                             mainViewModel.MagnifiedPointSelectionAction = null;
                             mainViewModel.MagnifyAtPoint = null;
                             mainViewModel.MagnifiedPointSelectionAction = null;
@@ -107,7 +109,6 @@ namespace JuliusSweetland.OptiKey.UI.Controls
                             }
                         };
                         mainViewModel.PointSelection += pointSelectionHandler;
-
                         IsOpen = true;
                     }
                 });
@@ -183,7 +184,40 @@ namespace JuliusSweetland.OptiKey.UI.Controls
         private void DisplayScaledScreenshot()
         {
             var bitmap = CaptureScreenshot();
-            Child = new Image { Source = bitmap.ToBitmapImage() };
+            var lastCursorPoint = System.Windows.Forms.Cursor.Position;
+            var popupImage = new Image { Source = bitmap.ToBitmapImage() };
+
+            // If popup and cursor overlap then dDefine the geometry for the "hole"
+            if (lastCursorPoint.X >= HorizontalOffset && lastCursorPoint.X <= HorizontalOffset + Width &&
+                lastCursorPoint.Y >= VerticalOffset && lastCursorPoint.Y <= VerticalOffset + Height)
+            {
+                // Define the geometry for the whole image area (a rectangle covering the image)
+                var popupArea = new RectangleGeometry(new Rect(0, 0, Width, Height));
+                var holeTopLeft = new Point((lastCursorPoint.X - HorizontalOffset - 2).CoerceToLowerLimit(0),
+                    (lastCursorPoint.Y - VerticalOffset - 2).CoerceToLowerLimit(0));
+                var holeBottomRight = new Point((lastCursorPoint.X - HorizontalOffset + 2).CoerceToUpperLimit(Width),
+                    (lastCursorPoint.Y - VerticalOffset + 2).CoerceToUpperLimit(Height));
+                var holeArea = new RectangleGeometry(new Rect(holeTopLeft, holeBottomRight));
+
+                // Combine the geometries: the total area minus the hole area
+                // The CombineMode.Exclude option "cuts out" the second geometry from the first
+                var combinedGeometry = new GeometryGroup();
+                combinedGeometry.FillRule = FillRule.EvenOdd; // EvenOdd ensures the overlap is transparent
+                combinedGeometry.Children.Add(popupArea);
+                combinedGeometry.Children.Add(holeArea);
+
+                // Create a VisualBrush from a Path using the combined geometry.
+                // White areas in the mask are opaque, black are transparent.
+                var maskPath = new System.Windows.Shapes.Path
+                {
+                    Data = combinedGeometry,
+                    Fill = System.Windows.Media.Brushes.White // White is opaque in OpacityMask
+                };
+
+                // Wrap the Path in a VisualBrush and set it as the OpacityMask
+                popupImage.OpacityMask = new VisualBrush(maskPath) { Stretch = Stretch.None };
+            }
+            Child = new Border() { Background = System.Windows.Media.Brushes.Transparent, Child = popupImage };
         }
 
         private Bitmap CaptureScreenshot()

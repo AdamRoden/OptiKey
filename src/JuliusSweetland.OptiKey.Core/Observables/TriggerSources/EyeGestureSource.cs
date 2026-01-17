@@ -151,7 +151,7 @@ namespace JuliusSweetland.OptiKey.Observables.TriggerSources
                                                                 keyCommands.Add(new KeyUpCommand { Value = command.Value });
                                                                 break;
                                                             case KeyCommands.KeyToggle:
-                                                                keyCommands.Add(new KeyTogglCommand { Value = command.Value });
+                                                                keyCommands.Add(new KeyToggleCommand { Value = command.Value });
                                                                 break;
                                                             case KeyCommands.MoveWindow:
                                                                 keyCommands.Add(new MoveWindowCommand { Value = command.Value });

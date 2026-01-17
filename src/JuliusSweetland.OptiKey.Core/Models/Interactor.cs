@@ -175,7 +175,8 @@ namespace JuliusSweetland.OptiKey.Models
         [XmlElement("ChangeKeyboard", typeof(ChangeKeyboardCommand))]
         [XmlElement("KeyDown", typeof(KeyDownCommand))]
         [XmlElement("KeyUp", typeof(KeyUpCommand))]
-        [XmlElement("KeyToggle", typeof(KeyTogglCommand))]
+        [XmlElement("KeyPress", typeof(KeyPressCommand))]
+        [XmlElement("KeyToggle", typeof(KeyToggleCommand))]
         [XmlElement("Loop", typeof(LoopCommand))]
         [XmlElement("Plugin", typeof(PluginCommand))]
         [XmlElement("MoveWindow", typeof(MoveWindowCommand))]
@@ -290,7 +291,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 backgroundColor = string.IsNullOrWhiteSpace(value) ? null : value;
-                if (HlsColor.TryParse(value, out SolidColorBrush brush))
+                if (HSLColor.TryParse(value, out SolidColorBrush brush))
                 {
                     BackgroundBrush = brush;
                     OnPropertyChanged();
@@ -312,7 +313,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 foregroundColor = string.IsNullOrWhiteSpace(value) ? null : value;
-                if (HlsColor.TryParse(value, out SolidColorBrush brush))
+                if (HSLColor.TryParse(value, out SolidColorBrush brush))
                 {
                     ForegroundBrush = brush;
                     OnPropertyChanged();
@@ -333,7 +334,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 borderColor = string.IsNullOrWhiteSpace(value) ? null : value;
-                if (HlsColor.TryParse(value, out SolidColorBrush brush))
+                if (HSLColor.TryParse(value, out SolidColorBrush brush))
                 {
                     BorderBrush = brush;
                     OnPropertyChanged();
@@ -380,7 +381,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 keyDisabledBackground = string.IsNullOrWhiteSpace(value) ? null : value;
-                KeyDisabledBackgroundBrush = HlsColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
+                KeyDisabledBackgroundBrush = HSLColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
             }
         }
 
@@ -392,7 +393,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 keyDisabledForeground = string.IsNullOrWhiteSpace(value) ? null : value;
-                KeyDisabledForegroundBrush = HlsColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
+                KeyDisabledForegroundBrush = HSLColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
             }
         }
 
@@ -417,7 +418,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 keyDownBackground = string.IsNullOrWhiteSpace(value) ? null : value;
-                KeyDownBackgroundBrush = HlsColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
+                KeyDownBackgroundBrush = HSLColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
             }
         }
 
@@ -429,7 +430,7 @@ namespace JuliusSweetland.OptiKey.Models
             set
             {
                 keyDownForeground = string.IsNullOrWhiteSpace(value) ? null : value;
-                KeyDownForegroundBrush = HlsColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
+                KeyDownForegroundBrush = HSLColor.TryParse(value, out SolidColorBrush brush) ? brush : null;
             }
         }
 
@@ -568,12 +569,12 @@ namespace JuliusSweetland.OptiKey.Models
             Expressed.BorderThicknessN = BorderThicknessN ?? inherited.BorderThicknessN;
             Expressed.CornerRadiusN = CornerRadiusN ?? inherited.CornerRadiusN;
 
-            Expressed.KeyDisabledBackgroundBrush = KeyDisabledBackgroundBrush ?? inherited.KeyDisabledBackgroundBrush ?? (Expressed.BackgroundBrush != null ? new SolidColorBrush(HlsColor.Fade(Expressed.BackgroundBrush.Color, .15)) : null);
-            Expressed.KeyDisabledForegroundBrush = KeyDisabledForegroundBrush ?? inherited.KeyDisabledForegroundBrush ?? (Expressed.ForegroundBrush != null ? new SolidColorBrush(HlsColor.Fade(Expressed.ForegroundBrush.Color, .15)) : null);
+            Expressed.KeyDisabledBackgroundBrush = KeyDisabledBackgroundBrush ?? inherited.KeyDisabledBackgroundBrush ?? (Expressed.BackgroundBrush != null ? new SolidColorBrush(HSLColor.Fade(Expressed.BackgroundBrush.Color, .15)) : null);
+            Expressed.KeyDisabledForegroundBrush = KeyDisabledForegroundBrush ?? inherited.KeyDisabledForegroundBrush ?? (Expressed.ForegroundBrush != null ? new SolidColorBrush(HSLColor.Fade(Expressed.ForegroundBrush.Color, .15)) : null);
             Expressed.KeyDisabledOpacityN = KeyDisabledOpacityN ?? inherited.KeyDisabledOpacityN ?? Expressed.OpacityN;
 
-            Expressed.KeyDownBackgroundBrush = KeyDownBackgroundBrush ?? inherited.KeyDownBackgroundBrush ??(Expressed.BackgroundBrush != null ? new SolidColorBrush(HlsColor.Fade(Expressed.BackgroundBrush.Color, .15)) : null);
-            Expressed.KeyDownForegroundBrush = KeyDownForegroundBrush ?? inherited.KeyDownForegroundBrush ?? (Expressed.ForegroundBrush != null ? new SolidColorBrush(HlsColor.Fade(Expressed.ForegroundBrush.Color, .15)) : null);
+            Expressed.KeyDownBackgroundBrush = KeyDownBackgroundBrush ?? inherited.KeyDownBackgroundBrush ??(Expressed.BackgroundBrush != null ? new SolidColorBrush(HSLColor.Fade(Expressed.BackgroundBrush.Color, .15)) : null);
+            Expressed.KeyDownForegroundBrush = KeyDownForegroundBrush ?? inherited.KeyDownForegroundBrush ?? (Expressed.ForegroundBrush != null ? new SolidColorBrush(HSLColor.Fade(Expressed.ForegroundBrush.Color, .15)) : null);
             Expressed.KeyDownOpacityN = KeyDownOpacityN ?? inherited.KeyDownOpacityN ?? Expressed.OpacityN;
 
             Expressed.SharedSizeGroup = SharedSizeGroup ?? inherited.SharedSizeGroup;

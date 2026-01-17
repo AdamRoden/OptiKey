@@ -194,41 +194,8 @@ namespace JuliusSweetland.OptiKey.Pro
                 mainWindow.AddOnMainViewLoadedAction(postMainViewLoaded);
 
                 //Show the main window
+                mainWindow.Opacity = 0; //make it invisible until after saved state is initialised
                 mainWindow.Show();
-
-                LookToScrollOverlayWindow lookToScrollOverlayWindow = null;
-                OverlayWindow overlayWindow = null;
-
-                void TrySetLookToScrollOverlayWindow()
-                {
-                    if (Settings.Default.LookToScrollOverlayBoundsThickness > 0
-                        || Settings.Default.LookToScrollOverlayDeadzoneThickness > 0)
-                    {
-                        lookToScrollOverlayWindow = lookToScrollOverlayWindow ?? new LookToScrollOverlayWindow(mainViewModel);
-                    }
-                }
-                void TrySetOverlayWindow()
-                {
-                    if (Settings.Default.GazeIndicatorStyle != GazeIndicatorStyles.None)
-                        overlayWindow = overlayWindow ?? new OverlayWindow(mainViewModel);
-                }
-                void TrySetResizeMode()
-                {
-                    mainWindow.ResizeMode = Settings.Default.EnableResizeWithMouse
-                        && (Settings.Default.MainWindowState == WindowStates.Floating
-                            || Settings.Default.MainWindowState == WindowStates.Docked)
-                    ? ResizeMode.CanResizeWithGrip : ResizeMode.NoResize;
-                }
-
-                // Create the overlay window, but don't show it yet. It'll make itself visible when the conditions are right.
-                TrySetLookToScrollOverlayWindow();
-                TrySetOverlayWindow();
-                TrySetResizeMode();
-
-                Settings.Default.OnPropertyChanges(s => s.LookToScrollOverlayBoundsThickness).Subscribe(value => { TrySetLookToScrollOverlayWindow(); });
-                Settings.Default.OnPropertyChanges(s => s.LookToScrollOverlayDeadzoneThickness).Subscribe(value => { TrySetLookToScrollOverlayWindow(); });
-                Settings.Default.OnPropertyChanges(s => s.GazeIndicatorStyle).Subscribe(value => { TrySetOverlayWindow(); });
-                Settings.Default.OnPropertyChanges(s => s.EnableResizeWithMouse).Subscribe(value => { TrySetResizeMode(); });
 
                 //Display splash screen and check for updates (and display message) after the window has been sized and positioned for the 1st time
                 EventHandler sizeAndPositionInitialised = null;
@@ -245,6 +212,7 @@ namespace JuliusSweetland.OptiKey.Pro
                     inputService.RequestResume(); //Start the input service
 
                     await CheckForUpdates(inputService, audioService, mainViewModel);
+                    mainWindow.Opacity = Settings.Default.MainWindowOpacity;
                 };
 
                 if (mainWindowManipulationService.SizeAndPositionIsInitialised)

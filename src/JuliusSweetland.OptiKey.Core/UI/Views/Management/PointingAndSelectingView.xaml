@@ -13,1275 +13,1190 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
              xmlns:valueConverters="clr-namespace:JuliusSweetland.OptiKey.UI.ValueConverters"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
-
-    <UserControl.Resources>
-        <CollectionViewSource x:Key="KeySelectionTriggerFixationCompleteTimeInMsByKeyValueGroupsCollectionViewSource" 
+  <UserControl.Resources>
+    <CollectionViewSource x:Key="KeySelectionTriggerFixationCompleteTimeInMsByKeyValueGroupsCollectionViewSource" 
                               Source="{Binding KeySelectionTriggerFixationCompleteTimeInMsByKeyValueGroups}" />
-        <valueConverters:BoolToCustomValues TrueValue="Visible" FalseValue="Hidden" x:Key="BooleanToVisible" />
-    </UserControl.Resources>
-    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+    <valueConverters:BoolToCustomValues TrueValue="Visible" FalseValue="Hidden" x:Key="BooleanToVisible" />
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}"/>
+  </UserControl.Resources>
+  <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <GroupBox Grid.Row="0" Header="{x:Static resx:Resources.POINTING}">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            
-            <GroupBox Grid.Row="0" Header="{x:Static resx:Resources.POINTING}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-            
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.SOURCE_LABEL}" 
-                               VerticalAlignment="Center" Margin="5" />
-                    <ComboBox Grid.Row="0" Grid.Column="1" 
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.SOURCE_LABEL}" 
+                               VerticalAlignment="Center" Margin="5"/>
+          <ComboBox Grid.Row="0" Grid.Column="1" 
                               ItemsSource="{Binding PointsSources}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding PointsSource, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.TOBII_EYEX_DATA_STREAM_PROCESSING_LEVEL}" 
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.TOBII_EYEX_DATA_STREAM_PROCESSING_LEVEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.Alienware17}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.SteelseriesSentry}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker4C}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker5}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeX}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGo}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGoPlus}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEye5}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeMini}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiRex}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_30}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_60}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="1" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.Alienware17}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.SteelseriesSentry}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker4C}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker5}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeX}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGo}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGoPlus}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEye5}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeMini}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiRex}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_30}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_60}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="1" Grid.Column="1" 
                               ItemsSource="{Binding DataStreamProcessingLevels}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding TobiiEyeXProcessingLevel, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.Alienware17}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.SteelseriesSentry}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker4C}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker5}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeX}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGo}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGoPlus}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEye5}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeMini}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiRex}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_30}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_60}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.IRISBOND_DATA_STREAM_PROCESSING_LEVEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.Alienware17}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.SteelseriesSentry}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker4C}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeTracker5}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiEyeX}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGo}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeGoPlus}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEye5}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiPcEyeMini}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiRex}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_30}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.TobiiX2_60}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.IRISBOND_DATA_STREAM_PROCESSING_LEVEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondDuo}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondHiru}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="2" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondDuo}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondHiru}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="2" Grid.Column="1" 
                               ItemsSource="{Binding IrisbondDataStreamProcessingLevels}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding IrisbondProcessingLevel, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondDuo}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondHiru}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.GAZE_SMOOTHING_LEVEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondDuo}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.IrisbondHiru}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.GAZE_SMOOTHING_LEVEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}" >
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-
-                    <ComboBox Grid.Row="3" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}" >
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="3" Grid.Column="1" 
                               ItemsSource="{Binding GazeSmoothingLevels}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding GazeSmoothingLevel, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}" >
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.SMOOTH_WHEN_CHANGING_GAZE_TARGET}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}" >
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.SMOOTH_WHEN_CHANGING_GAZE_TARGET}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <CheckBox Grid.Row="4" Grid.Column="1" 
-                              VerticalAlignment="Center"
-                              IsChecked="{Binding SmoothWhenChangingGazeTarget, Mode=TwoWay}">
-                        <CheckBox.Style>
-                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
-
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.MOUSE_POSITION_SAMPLE_INTERVAL_LABEL}" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:ToggleSwitch Grid.Row="4" Grid.Column="1" 
+                              VerticalAlignment="Center" Content=""
+                              IsOn="{Binding SmoothWhenChangingGazeTarget, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
+          <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resx:Resources.MOUSE_POSITION_SAMPLE_INTERVAL_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="4" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="4" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding PointsMousePositionSampleIntervalInMs, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Resources.TIME_UNTIL_POINT_BECOMES_IRRELEVENT_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Resources.TIME_UNTIL_POINT_BECOMES_IRRELEVENT_LABEL}" 
                                 VerticalAlignment="Center" Margin="5" />
-                    <controls:NumericUpDown Grid.Row="5" Grid.Column="1" TextAlignment="Left"
+          <controls:NumericUpDown Grid.Row="5" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding PointTtlInMs, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.HIDE_CURSOR_LABEL}" 
+          <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.HIDE_CURSOR_LABEL}" 
                                 VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <CheckBox Grid.Row="6" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:ToggleSwitch Grid.Row="6" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding PointsMousePositionHideCursor, Mode=TwoWay}">
-                        <CheckBox.Style>
-                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
-                </Grid>
-            </GroupBox>
-        
-            <GroupBox Grid.Row="1" Header="{x:Static resx:Resources.SELECTION}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_SOURCE_LABEL}" 
+                              Content="" IsOn="{Binding PointsMousePositionHideCursor, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointsSource}" Value="{x:Static enums:PointsSources.MousePosition}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
+        </Grid>
+      </GroupBox>
+      <GroupBox Grid.Row="1" Header="{x:Static resx:Resources.SELECTION}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_SOURCE_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-                    <ComboBox Grid.Row="0" Grid.Column="1" 
+          <ComboBox Grid.Row="0" Grid.Column="1" 
                               ItemsSource="{Binding TriggerSources}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding KeySelectionTriggerSource, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_LOCK_ON_LABEL}" 
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_LOCK_ON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="1" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="1" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding KeySelectionTriggerFixationLockOnTimeInMs, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.RESUMING_INCOMPLETE_KEY_FIXATION_REQUIRES_NEW_LOCK_ON_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.RESUMING_INCOMPLETE_KEY_FIXATION_REQUIRES_NEW_LOCK_ON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <CheckBox Grid.Row="2" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:ToggleSwitch Grid.Row="2" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding KeySelectionTriggerFixationResumeRequiresLockOn, Mode=TwoWay}">
-                        <CheckBox.Style>
-                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
-
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.INCOMPLETE_KEY_FIXATION_TTL_LABEL}" 
+                              Content="" IsOn="{Binding KeySelectionTriggerFixationResumeRequiresLockOn, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
+          <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resx:Resources.INCOMPLETE_KEY_FIXATION_TTL_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="3" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="3" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding KeySelectionTriggerIncompleteFixationTtlInMs, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.Style>
-                            <Style TargetType="{x:Type Grid}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"
-                                   Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_COMPLETE_LABEL}">
-                        </TextBlock>
-                        <StackPanel Grid.Row="0" Grid.Column="1">
-                            <TextBlock VerticalAlignment="Center" Margin="0,5,0,2" FontStyle="Italic"
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.Style>
+              <Style TargetType="{x:Type Grid}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Grid.Style>
+            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"
+                                   Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_COMPLETE_LABEL}"></TextBlock>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+              <TextBlock VerticalAlignment="Center" Margin="0,5,0,2" FontStyle="Italic"
                                        Text="{x:Static resx:Resources.COMPLETION_TIMES_HINT}" />
-                            <TextBox TextAlignment="Left" Background="Transparent" Margin="0,0,0,5">
-                                <TextBox.Text>
-                                    <Binding Path="KeySelectionTriggerFixationDefaultCompleteTimeInMs"
+              <TextBox TextAlignment="Left" Background="Transparent" Margin="0,0,0,5">
+                <TextBox.Text>
+                  <Binding Path="KeySelectionTriggerFixationDefaultCompleteTimeInMs"
                                              NotifyOnValidationError="True"
                                              UpdateSourceTrigger="PropertyChanged">
-                                        <Binding.ValidationRules>
-                                            <valueConverters:CompletionTimesValidation />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </StackPanel>
-                    </Grid>
-
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_COMPLETE_ON_INDIVIDUAL_KEYS}" 
+                    <Binding.ValidationRules>
+                      <valueConverters:CompletionTimesValidation />
+                    </Binding.ValidationRules>
+                  </Binding>
+                </TextBox.Text>
+              </TextBox>
+            </StackPanel>
+          </Grid>
+          <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resx:Resources.KEY_FIXATION_TIME_TO_COMPLETE_ON_INDIVIDUAL_KEYS}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <CheckBox Grid.Row="5" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:ToggleSwitch Grid.Row="5" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey, Mode=TwoWay}">
-                        <CheckBox.Style>
-                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
-
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.INDIVIDUAL_KEY_FIXATION_TIME_TO_COMPLETE_LABEL}" 
+                              Content="" IsOn="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
+          <TextBlock Grid.Row="6" Grid.Column="0" Text="{x:Static resx:Resources.INDIVIDUAL_KEY_FIXATION_TIME_TO_COMPLETE_LABEL}" 
                                VerticalAlignment="Top" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </MultiDataTrigger.Setters>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ItemsControl Grid.Row="6" Grid.Column="1"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                      <Setter Property="Visibility" Value="Visible" />
+                    </MultiDataTrigger.Setters>
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ItemsControl Grid.Row="6" Grid.Column="1"
                                   VirtualizingStackPanel.IsVirtualizing="True"
                                   ItemsSource="{Binding Source={StaticResource KeySelectionTriggerFixationCompleteTimeInMsByKeyValueGroupsCollectionViewSource}, Mode=OneWay}"
                                   Grid.IsSharedSizeScope="True">
-                        <ItemsControl.Style>
-                            <Style TargetType="{x:Type ItemsControl}" BasedOn="{StaticResource {x:Type ItemsControl}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </MultiDataTrigger.Setters>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ItemsControl.Style>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Expander Header="{Binding}"
+            <ItemsControl.Style>
+              <Style TargetType="{x:Type ItemsControl}" BasedOn="{StaticResource {x:Type ItemsControl}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding KeySelectionTriggerFixationCompleteTimesByIndividualKey}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                      <Setter Property="Visibility" Value="Visible" />
+                    </MultiDataTrigger.Setters>
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ItemsControl.Style>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Expander Header="{Binding}"
                                           VerticalAlignment="Center" Margin="0,5,0,5">
-                                    <Expander.HeaderTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="KeySelectionTriggerFixationCompleteTimeGroupNameColumn" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Name}">
-                                                    <TextBlock.Foreground>
-                                                        <MultiBinding Converter="{x:Static mahAppsShared:BackgroundToForegroundConverter.Instance}">
-                                                            <Binding Mode="OneWay"
+                  <Expander.HeaderTemplate>
+                    <DataTemplate>
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" SharedSizeGroup="KeySelectionTriggerFixationCompleteTimeGroupNameColumn" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Name}">
+                          <TextBlock.Foreground>
+                            <MultiBinding Converter="{x:Static mahAppsShared:BackgroundToForegroundConverter.Instance}">
+                              <Binding Mode="OneWay"
                                                                      Path="Background"
                                                                      RelativeSource="{RelativeSource AncestorType={x:Type Expander}}" />
-                                                            <Binding Mode="OneWay"
-                                                                     Path="(controls:GroupBoxHelper.HeaderForeground)"
-                                                                     RelativeSource="{RelativeSource TemplatedParent}" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Foreground>    
-                                                </TextBlock>
-
-                                                <!-- unused control to set backdrop -->
-                                                <TextBox Grid.Column="1" TextAlignment="Left"/>
-
-                                                <!-- text visible in front, but doesn't take click focus -->
-                                                <TextBlock Grid.Column="1" Text="{x:Static resx:Resources.VARIOUS}" Foreground="Gray" VerticalAlignment="Center" Margin="5"
+                            </MultiBinding>
+                          </TextBlock.Foreground></TextBlock>
+                        <!-- unused control to set backdrop -->
+                        <TextBox Grid.Column="1" TextAlignment="Left"/>
+                        <!-- text visible in front, but doesn't take click focus -->
+                        <TextBlock Grid.Column="1" Text="{x:Static resx:Resources.VARIOUS}" Foreground="Gray" VerticalAlignment="Center" Margin="5"
                                                            Visibility="{Binding ContainsVarious, Converter={StaticResource BooleanToVisible}}"
-                                                           Focusable="False" FontStyle="Italic">
-                                                </TextBlock>
-                                                
-                                                <!-- real control, is see-through -->
-                                                <TextBox Grid.Column="1" TextAlignment="Left" Background="Transparent">
-                                                    <TextBox.Text>
-                                                        <Binding Path="CommonTimeSpanTotalMilliseconds"
+                                                           Focusable="False" FontStyle="Italic"></TextBlock>
+                        <!-- real control, is see-through -->
+                        <TextBox Grid.Column="1" TextAlignment="Left" Background="Transparent">
+                          <TextBox.Text>
+                            <Binding Path="CommonTimeSpanTotalMilliseconds"
                                                                      NotifyOnValidationError="True"
                                                                      UpdateSourceTrigger="PropertyChanged">
-                                                            <Binding.ValidationRules>
-                                                                <valueConverters:CompletionTimesValidation />
-                                                            </Binding.ValidationRules>
-                                                        </Binding>
-                                                    </TextBox.Text>
-                                                </TextBox>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </Expander.HeaderTemplate>
-                                    <ItemsControl VirtualizingStackPanel.IsVirtualizing="True"
+                              <Binding.ValidationRules>
+                                <valueConverters:CompletionTimesValidation />
+                              </Binding.ValidationRules>
+                            </Binding>
+                          </TextBox.Text>
+                        </TextBox>
+                      </Grid>
+                    </DataTemplate>
+                  </Expander.HeaderTemplate>
+                  <ItemsControl VirtualizingStackPanel.IsVirtualizing="True"
                                                   ItemsSource="{Binding KeyValueAndTimeSpans, Mode=OneWay}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" SharedSizeGroup="KeySelectionTriggerFixationCompleteTimeKeyNameColumn" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" 
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="KeySelectionTriggerFixationCompleteTimeKeyNameColumn" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Grid.Column="0" Text="{Binding Name}" 
                                                                VerticalAlignment="Center" Margin="5" />
-                                                    <TextBox Grid.Column="1" TextAlignment="Left">
-                                                        <TextBox.Text>
-                                                            <Binding Path="TimeSpanTotalMilliseconds"
+                          <TextBox Grid.Column="1" TextAlignment="Left">
+                            <TextBox.Text>
+                              <Binding Path="TimeSpanTotalMilliseconds"
                                                                      NotifyOnValidationError="True"
                                                                      UpdateSourceTrigger="PropertyChanged">
-                                                                <Binding.ValidationRules>
-                                                                    <valueConverters:CompletionTimesValidation />
-                                                                </Binding.ValidationRules>
-                                                            </Binding>
-                                                        </TextBox.Text>
-                                                    </TextBox>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <VirtualizingStackPanel />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </Expander>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_KEYBOARD_KEY_LABEL}" 
+                                <Binding.ValidationRules>
+                                  <valueConverters:CompletionTimesValidation />
+                                </Binding.ValidationRules>
+                              </Binding>
+                            </TextBox.Text>
+                          </TextBox>
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                  </ItemsControl>
+                </Expander>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <VirtualizingStackPanel />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+          <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_KEYBOARD_KEY_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="7" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="7" Grid.Column="1" 
                               ItemsSource="{Binding Keys}"
                               SelectedValue="{Binding KeySelectionTriggerKeyboardKeyDownUpKey, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_SLOT_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_SLOT_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="7" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="7" Grid.Column="1" 
                               ItemsSource="{Binding XInputSlots}"                              
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding KeySelectionTriggerGamepadXInputController, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_BUTTON_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="8" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="8" Grid.Column="1" 
                               ItemsSource="{Binding GamepadButtonFlags}"
                               SelectedValue="{Binding KeySelectionTriggerGamepadXInputButtonDownUpButton, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_CONTROLLER_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_CONTROLLER_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="7" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="7" Grid.Column="1" 
                               ItemsSource="{Binding DirectInputControllers}"                              
                               DisplayMemberPath="Value"
                               SelectedValuePath="Key"
                               SelectedValue="{Binding KeySelectionTriggerGamepadDirectInputController, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_BUTTON_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="8" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_GAMEPAD_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="8" Grid.Column="1"  TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="8" Grid.Column="1"  TextAlignment="Left"
                                             Minimum="1" Maximum="128" Interval="1" StringFormat="###,##0"
                                             Value="{Binding KeySelectionTriggerGamepadDirectInputButtonDownUpButton, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_MOUSE_BUTTON_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="7" Grid.Column="0" Text="{x:Static resx:Resources.KEY_SELECTION_MOUSE_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="8" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="8" Grid.Column="1" 
                               ItemsSource="{Binding MouseButtons}"
                               SelectedValue="{Binding KeySelectionTriggerMouseDownUpButton, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="9" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_SOURCE_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="9" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_SOURCE_LABEL}" 
                                VerticalAlignment="Center" Margin="5" />
-                    <ComboBox Grid.Row="9" Grid.Column="1" 
+          <ComboBox Grid.Row="9" Grid.Column="1" 
                               ItemsSource="{Binding TriggerSources}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding PointSelectionTriggerSource, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_TIME_TO_LOCK_ON_LABEL}" 
+          <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_TIME_TO_LOCK_ON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="10" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="10" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding PointSelectionTriggerFixationLockOnTimeInMs, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="11" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_TIME_TO_COMPLETE_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="11" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_TIME_TO_COMPLETE_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="11" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="11" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding PointSelectionTriggerFixationCompleteTimeInMs, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="12" Grid.Column="0" Text="{x:Static resx:Resources.POINT_LOCK_ON_RADIUS_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="12" Grid.Column="0" Text="{x:Static resx:Resources.POINT_LOCK_ON_RADIUS_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="12" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="12" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="1" StringFormat="###,##0"
                                             Value="{Binding PointSelectionTriggerLockOnRadiusInPixels, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-                    
-                    <TextBlock Grid.Row="13" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_RADIUS_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="13" Grid.Column="0" Text="{x:Static resx:Resources.POINT_FIXATION_RADIUS_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="13" Grid.Column="1" TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="13" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="1" StringFormat="###,##0"
                                             Value="{Binding PointSelectionTriggerFixationRadiusInPixels, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-            
-                    <TextBlock Grid.Row="14" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_KEYBOARD_KEY_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="14" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_KEYBOARD_KEY_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="14" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="14" Grid.Column="1" 
                               ItemsSource="{Binding Keys}"
                               SelectedValue="{Binding PointSelectionTriggerKeyboardKeyDownUpKey, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="14" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_SLOT_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.KeyboardKeyDownsUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="14" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_SLOT_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="14" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="14" Grid.Column="1" 
                               ItemsSource="{Binding XInputSlots}"                              
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding PointSelectionTriggerGamepadXInputController, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-                    
-                    
-                    <TextBlock Grid.Row="15" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_CONTROLLER_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="15" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_CONTROLLER_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="15" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="15" Grid.Column="1" 
                               ItemsSource="{Binding DirectInputControllers}"                              
                               DisplayMemberPath="Value"
                               SelectedValuePath="Key"
                               SelectedValue="{Binding PointSelectionTriggerGamepadDirectInputController, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_BUTTON_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="16" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="16" Grid.Column="1" 
                               ItemsSource="{Binding GamepadButtonFlags}"
                               SelectedValue="{Binding PointSelectionTriggerGamepadXInputButtonDownUpButton, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-
-                    <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_BUTTON_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.XInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_GAMEPAD_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="16" Grid.Column="1"  TextAlignment="Left"
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="16" Grid.Column="1"  TextAlignment="Left"
                                             Minimum="1" Maximum="128" Interval="1" StringFormat="###,##0"
                                             Value="{Binding PointSelectionTriggerGamepadDirectInputButtonDownUpButton, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="15" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_MOUSE_BUTTON_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.DirectInputButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="15" Grid.Column="0" Text="{x:Static resx:Resources.POINT_SELECTION_MOUSE_BUTTON_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="15" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="15" Grid.Column="1" 
                               ItemsSource="{Binding MouseButtons}"
                               SelectedValue="{Binding PointSelectionTriggerMouseDownUpButton, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_BEHAVIOUR_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.MouseButtonDownUps}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="16" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_BEHAVIOUR_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <ComboBox Grid.Row="16" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="16" Grid.Column="1" 
                               ItemsSource="{Binding ProgressIndicatorBehaviours}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding ProgressIndicatorBehaviour, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-
-                    <TextBlock Grid.Row="17" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_START_SIZE_LABEL}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="17" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_START_SIZE_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="17" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="17" Grid.Column="1" 
                                             TextAlignment="Left"
                                             Minimum="0" Maximum="100" Interval="1"
                                             Value="{Binding ProgressIndicatorResizeStartProportion, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-
-                    <TextBlock Grid.Row="18" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_END_SIZE_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+          <TextBlock Grid.Row="18" Grid.Column="0" Text="{x:Static resx:Resources.SELECTION_PROGRESS_INDICATOR_END_SIZE_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <controls:NumericUpDown Grid.Row="18" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <controls:NumericUpDown Grid.Row="18" Grid.Column="1" 
                                             TextAlignment="Left"
                                             Minimum="0" Maximum="100" Interval="1"
                                             Value="{Binding ProgressIndicatorResizeEndProportion, Mode=TwoWay}">
-                        <controls:NumericUpDown.Style>
-                            <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
-                                            <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </controls:NumericUpDown.Style>
-                    </controls:NumericUpDown>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Grid.Row="2" Header="{x:Static resx:Resources.MULTI_KEY_SELECTION}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-            
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.STOP_SIGNAL_LABEL}" 
+            <controls:NumericUpDown.Style>
+              <Style TargetType="{x:Type controls:NumericUpDown}" BasedOn="{StaticResource {x:Type controls:NumericUpDown}}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Grow}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                  <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                      <Condition Binding="{Binding PointSelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}" />
+                      <Condition Binding="{Binding ProgressIndicatorBehaviour}" Value="{x:Static enums:ProgressIndicatorBehaviours.Shrink}" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                  </MultiDataTrigger>
+                </Style.Triggers>
+              </Style>
+            </controls:NumericUpDown.Style>
+          </controls:NumericUpDown>
+        </Grid>
+      </GroupBox>
+      <GroupBox Grid.Row="2" Header="{x:Static resx:Resources.MULTI_KEY_SELECTION}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.STOP_SIGNAL_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>    
-                    </TextBlock>
-                    <ComboBox Grid.Row="0" Grid.Column="1" 
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <ComboBox Grid.Row="0" Grid.Column="1" 
                               ItemsSource="{Binding TriggerStopSignals}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
                               SelectedValue="{Binding MultiKeySelectionTriggerStopSignal, Mode=TwoWay}">
-                        <ComboBox.Style>
-                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
-                                <Setter Property="Visibility" Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-                
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.MINIMUM_DWELL_TIME_TO_INCLUDE_IN_CAPTURE}" 
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding KeySelectionTriggerSource}" Value="{x:Static enums:TriggerSources.Fixations}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resx:Resources.MINIMUM_DWELL_TIME_TO_INCLUDE_IN_CAPTURE}" 
                                VerticalAlignment="Center" Margin="5"/>
-                    <controls:NumericUpDown Grid.Row="1" Grid.Column="1" TextAlignment="Left"
+          <controls:NumericUpDown Grid.Row="1" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding MultiKeySelectionFixationMinDwellTimeInMs, Mode=TwoWay}"/>
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.CAPTURE_TIMEOUT_LABEL}" 
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resx:Resources.CAPTURE_TIMEOUT_LABEL}" 
                                VerticalAlignment="Center" Margin="5"/>
-                    <controls:NumericUpDown Grid.Row="2" Grid.Column="1" TextAlignment="Left"
+          <controls:NumericUpDown Grid.Row="2" Grid.Column="1" TextAlignment="Left"
                                             Minimum="1" Interval="10" StringFormat="###,##0"
                                             Value="{Binding MultiKeySelectionMaxDurationInMs, Mode=TwoWay}"/>
-                </Grid>
-            </GroupBox>
         </Grid>
-    </ScrollViewer>
+      </GroupBox>
+    </Grid>
+  </ScrollViewer>
 </UserControl>

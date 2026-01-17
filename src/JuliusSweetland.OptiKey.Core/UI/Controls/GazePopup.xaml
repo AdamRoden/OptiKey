@@ -1,0 +1,46 @@
+﻿<!-- Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved -->
+<Popup x:Class="JuliusSweetland.OptiKey.UI.Controls.GazePopup"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+       IsHitTestVisible="False" SnapsToDevicePixels="True" UseLayoutRounding="True">
+  <Popup.Resources>
+    <Style x:Key="Crosshair" TargetType="Path">
+      <Setter Property="Fill" Value="Transparent"/>
+      <Setter Property="Opacity" Value=".5"/>
+      <Setter Property="Stretch" Value="Fill"/>
+      <Setter Property="Data" Value="M3,4 5,4 M4,3 4,5"/>
+    </Style>
+    <Style x:Key="Monical" TargetType="Path">
+      <Setter Property="Fill" Value="Transparent"/>
+      <Setter Property="Opacity" Value=".5"/>
+      <Setter Property="Stretch" Value="Fill"/>
+      <Setter Property="Data" Value="M0,4 C0,8 8,8 8,4 C8,0 0,0 0,4"/>
+    </Style>
+  </Popup.Resources>
+  <Canvas>
+    <Grid x:Name="Indicator">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+        <ColumnDefinition/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition/>
+        <RowDefinition/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+      <Grid x:Name="Crosshair" Grid.ColumnSpan="3" Grid.RowSpan="3">
+        <Path Style="{StaticResource Crosshair}" Stroke="White" StrokeThickness="2"/>
+        <Path Style="{StaticResource Crosshair}" Stroke="Black" StrokeThickness="1"/>
+      </Grid>
+      <Grid x:Name="Monical" Grid.ColumnSpan="3" Grid.RowSpan="3">
+        <Path Style="{StaticResource Monical}" Stroke="White" StrokeThickness="4"/>
+        <Path Style="{StaticResource Monical}" Stroke="Black" StrokeThickness="2"/>
+      </Grid>
+      <Grid x:Name="Scope" Grid.Column="1" Grid.Row="1">
+        <Path Style="{StaticResource Crosshair}" Stroke="White" StrokeThickness="2"/>
+        <Path Style="{StaticResource Crosshair}" Stroke="Black" StrokeThickness="1"/>
+      </Grid>
+    </Grid>
+  </Canvas>
+</Popup>

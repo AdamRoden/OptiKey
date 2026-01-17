@@ -12,6 +12,7 @@ namespace JuliusSweetland.OptiKey.DataFilters
         private double Gain;              //Scale from 0% to 100% applied to the movement delta when updating the Estimate
         private Point Measurement1;
         private Point Measurement2;
+        private Point Measurement3;
         private readonly double MeasurementNoise;
 
         public KalmanFilter()
@@ -33,20 +34,26 @@ namespace JuliusSweetland.OptiKey.DataFilters
 
             // this dictates how quickly process noise scales up across all deltas
             // higher = extend smoothness for longer saccades
-            var processScale = 10.0 * smoothingFactor - 5.0;
+            var processScale = 4.0 * smoothingFactor;
 
             // this realigns the curve to ensure we always scale up smoothly from delta = 0 to max
-            var curveOffset = -1.0 * smoothingFactor;
+            var curveOffset = -0.8 * smoothingFactor;
 
             //A weighted average of the last 3 measurements will reduce the recoil inherent with large movements
             if (Settings.Default.SmoothWhenChangingGazeTarget)
             {
                 measurement = new Point(
-                    measurement.X * 0.45 + Measurement1.X * 0.3 + Measurement2.X * 0.25,
-                    measurement.Y * 0.45 + Measurement1.Y * 0.3 + Measurement2.Y * 0.25);
+                    measurement.X * 0.6 + Measurement1.X * 0.2 + Measurement2.X * 0.1 + Measurement3.X * .1,
+                    measurement.Y * 0.6 + Measurement1.Y * 0.2 + Measurement2.Y * 0.1 + Measurement3.Y * .1);
 
+                Measurement3 = Measurement2;
                 Measurement2 = Measurement1;
                 Measurement1 = measurement;
+            }
+
+            if (processScale < 1)
+            {
+                return measurement; // No smoothing
             }
 
             // == PROCESS MODEL: this encodes all our desired behavior wrt smoothness == //

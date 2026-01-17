@@ -3,7 +3,6 @@ using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Models;
 using JuliusSweetland.OptiKey.Properties;
-using JuliusSweetland.OptiKey.Static;
 using JuliusSweetland.OptiKey.UI.Controls;
 using JuliusSweetland.OptiKey.UI.Utilities;
 using JuliusSweetland.OptiKey.UI.ViewModels.Keyboards;
@@ -14,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -98,15 +98,12 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
 
         public static List<string> KeyboardList = new List<string>()
         {
-            "Alpha1", "Alpha2", "Alpha3",
-            "ConversationAlpha1", "ConversationAlpha2", "ConversationAlpha3",
-            "ConversationNumericAndSymbols", "Currencies1", "Currencies2",
-            "Diacritics1", "Diacritics2", "Diacritics3", "Language", "Menu", "Mouse",
-            "NumericAndSymbols1", "NumericAndSymbols2", "NumericAndSymbols3", "PhysicalKeys",
+            "Alpha1", "ConversationAlpha1", "ConversationNumericAndSymbols", "Currencies1",
+            "Diacritics1", "Language", "Menu", "Mouse", "NumericAndSymbols1",  "NumericAndSymbols2", "PhysicalKeys",
             "SimplifiedAlpha", "SimplifiedConversationAlpha", "SizeAndPosition", "WebBrowsing"
         };
 
-        public static List<string> WindowStates = new List<string>() { { "" }, { Enums.WindowStates.Docked.ToString() }, { Enums.WindowStates.Floating.ToString() }, { Enums.WindowStates.Maximised.ToString() } };
+        public static List<string> WindowStates = new List<string>() { { Enums.WindowStates.Docked.ToString() }, { Enums.WindowStates.Floating.ToString() }, { Enums.WindowStates.Maximised.ToString() } };
 
         public static List<string> PositionList = Enum.GetNames(typeof(MoveToDirections)).ToList();
         
@@ -158,7 +155,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
         private ObservableCollection<InteractorProfile> profiles;
         public ObservableCollection<InteractorProfile> Profiles
         { get { return profiles; } set { profiles = value; OnPropertyChanged(); } }
-        
+        private bool isHelpOpen;
+        public bool IsHelpOpen
+        { get { return isHelpOpen; } set { isHelpOpen = value; OnPropertyChanged(); } }
+
+
         private InteractorProfile profile = new InteractorProfile();
         public InteractorProfile Profile
         { get { return profile; } set { profile = value; OnPropertyChanged(); } }
@@ -179,7 +180,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                     if (interactor is DynamicPopup)
                     {
                         canvas.Children.Remove(gazeRegion);
-                        interactor.Key.Margin = new Thickness(ScreenLeft + interactor.GazeLeft * ScreenWidth, ScreenTop + interactor.GazeTop * ScreenHeight, 0, 0);
+                        interactor.Key.Margin = new Thickness(ScreenOffset + interactor.GazeLeft * ScreenWidth, ScreenOffset + interactor.GazeTop * ScreenHeight, 0, 0);
                     }
                 }
                 interactor = value;
@@ -194,7 +195,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                             gazeRegion.Width = interactor.Key.Width;
                             gazeRegion.Height = interactor.Key.Height;
                             canvas.Children.Add(gazeRegion);
-                            interactor.Key.Margin = new Thickness((ScreenLeft + interactor.GazeLeft * ScreenWidth).Clamp(ScreenLeft, ScreenLeft + ScreenWidth - interactor.GazeWidth * ScreenWidth), (ScreenTop + interactor.GazeTop * ScreenHeight).Clamp(ScreenTop, ScreenTop + ScreenHeight - interactor.GazeHeight * ScreenHeight), 0, 0);
+                            interactor.Key.Margin = new Thickness((ScreenOffset + interactor.GazeLeft * ScreenWidth).Clamp(ScreenOffset, ScreenOffset + ScreenWidth - interactor.GazeWidth * ScreenWidth), (ScreenOffset + interactor.GazeTop * ScreenHeight).Clamp(ScreenOffset, ScreenOffset + ScreenHeight - interactor.GazeHeight * ScreenHeight), 0, 0);
                         }
                     }
                     SelectedInteractorType = interactor.TypeAsString;
@@ -310,20 +311,8 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
 
             switch (KeyboardName)
             {
-                case "Alpha2":
-                    content = (DependencyObject)new Alpha2().GetContent();
-                    break;
-                case "Alpha3":
-                    content = (DependencyObject)new Alpha3().GetContent();
-                    break;
                 case "ConversationAlpha1":
                     content = (DependencyObject)new ConversationAlpha1(null).GetContent();
-                    break;
-                case "ConversationAlpha2":
-                    content = (DependencyObject)new ConversationAlpha1(null).GetContent();
-                    break;
-                case "ConversationAlpha3":
-                    content = (DependencyObject)new ConversationAlpha3(null).GetContent();
                     break;
                 case "ConversationNumericAndSymbols":
                     content = (DependencyObject)new ConversationNumericAndSymbols(null).GetContent();
@@ -331,17 +320,8 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                 case "Currencies1":
                     content = (DependencyObject)new Currencies1().GetContent();
                     break;
-                case "Currencies2":
-                    content = (DependencyObject)new Currencies2().GetContent();
-                    break;
                 case "Diacritics1":
                     content = (DependencyObject)new Diacritics1().GetContent();
-                    break;
-                case "Diacritics2":
-                    content = (DependencyObject)new Diacritics2().GetContent();
-                    break;
-                case "Diacritics3":
-                    content = (DependencyObject)new Diacritics3().GetContent();
                     break;
                 case "Language":
                     content = (DependencyObject)new Language(null).GetContent();
@@ -357,9 +337,6 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                     break;
                 case "NumericAndSymbols2":
                     content = (DependencyObject)new NumericAndSymbols2().GetContent();
-                    break;
-                case "NumericAndSymbols3":
-                    content = (DependencyObject)new NumericAndSymbols3().GetContent();
                     break;
                 case "PhysicalKeys":
                     content = (DependencyObject)new PhysicalKeys().GetContent();
@@ -388,12 +365,21 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
             var maxCol = 0d;
             foreach (Key key in allKeys.Where(x => x is Key && VisualAndLogicalTreeHelper.FindLogicalParent<Output>(x) == null))
             {
-                var i = new DynamicKey() { Label = key.ShiftUpText, ShiftDownLabel = key.ShiftDownText, ColN = Grid.GetColumn(key), RowN = Grid.GetRow(key) - outputRows, WidthN = Grid.GetColumnSpan(key), HeightN = Grid.GetRowSpan(key) };
+                var i = new DynamicKey() { Label = key.ShiftUpText, ShiftDownLabel = key.ShiftDownText, ColN = Grid.GetColumn(key), RowN = Grid.GetRow(key) - outputRows >= 0 ? Grid.GetRow(key) - outputRows : Grid.GetRow(key), WidthN = Grid.GetColumnSpan(key), HeightN = Grid.GetRowSpan(key) };
                 if (key.Value != null)
                 {
                     var kv = key.Value;
                     if (kv.FunctionKey.HasValue)
                         i.Commands.Add(new ActionCommand() { Value = kv.FunctionKey.Value.ToString() });
+                    else if (kv.String != null && string.IsNullOrWhiteSpace(kv.String))
+                    {
+                        if (kv.String == ((char)32).ToString())
+                            i.Commands.Add(new TextCommand() { Value = "&#32;" });
+                        else if (kv.String == ((char)9).ToString())
+                            i.Commands.Add(new TextCommand() { Value = "&#9;" });
+                        else
+                            i.Commands.Add(new TextCommand() { Value = "&#10;" });
+                    }
                     else
                         i.Commands.Add(new TextCommand() { Value = kv.String });
                 }
@@ -411,12 +397,81 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
             XmlKeyboard = newKeyboard;
         }
 
+
+        private bool[,] _cellOccupancy;
+        private int _rowCount;
+        private int _columnCount;
+
         private void AddLayout()
         {
             XmlKeyboard = new XmlKeyboard() {
                 Name = "NewKeyboard",
                 Grid = new XmlGrid() { Cols = 16, Rows = 14 },
                 Profiles = new List<InteractorProfile> { new InteractorProfile() { Name = "All" } } };
+
+            InitializeOccupancyArray();
+        }
+
+        private void InitializeOccupancyArray()
+        {
+            _rowCount = XmlKeyboard.Rows;
+            _columnCount = XmlKeyboard.Cols;
+            _cellOccupancy = new bool[_rowCount, _columnCount];
+
+            // Mark existing controls' spaces as occupied
+            foreach (var interactor in XmlKeyboard.Interactors)
+            {
+                MarkOccupied(interactor.RowN, interactor.ColN, interactor.HeightN, interactor.WidthN, true);
+            }
+        }
+
+        private void MarkOccupied(int startRow, int startCol, int rowSpan, int colSpan, bool isOccupied)
+        {
+            for (int r = startRow; r < startRow + rowSpan; r++)
+            {
+                for (int c = startCol; c < startCol + colSpan; c++)
+                {
+                    if (r >= 0 && r < _rowCount && c >= 0 && c < _columnCount)
+                    {
+                        _cellOccupancy[r, c] = isOccupied;
+                    }
+                }
+            }
+        }
+
+        private Tuple<int, int> FindEmptySpace(int neededRowSpan, int neededColumnSpan, int? row = null, int? col = null)
+        {
+            var startRow = row.HasValue ? row.Value : 0; 
+            var endRow = row.HasValue ? row.Value + neededRowSpan - 1 : _rowCount - neededRowSpan;
+            var startCol = col.HasValue ? col.Value : 0;
+            var endCol = col.HasValue ? col.Value + neededColumnSpan - 1 : _columnCount - neededColumnSpan;
+            
+            for (int r = startRow; r <= endRow; r++)
+            {
+                for (int c = startCol; c <= endCol; c++)
+                {
+                    if (CheckAvailability(r, c, neededRowSpan, neededColumnSpan))
+                    {
+                        return new Tuple<int, int>(r, c);
+                    }
+                }
+            }
+            return null; // No suitable space found
+        }
+
+        private bool CheckAvailability(int startRow, int startCol, int rowSpan, int colSpan)
+        {
+            for (int r = startRow; r < startRow + rowSpan; r++)
+            {
+                for (int c = startCol; c < startCol + colSpan; c++)
+                {
+                    if (r >= _rowCount || c >= _columnCount || _cellOccupancy[r, c])
+                    {
+                        return false; // Cell is outside bounds or already occupied
+                    }
+                }
+            }
+            return true; // All cells in the range are available
         }
 
         private void AddProfile()
@@ -463,6 +518,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
         {
             if (Interactors == null) { return; }
 
+            InitializeOccupancyArray();
             var minKeyWidth = 1;
             var minKeyHeight = 1;
             if (Interactors.Where(x => x is DynamicKey).Any())
@@ -471,46 +527,54 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                 minKeyHeight = Interactors.Where(x => x is DynamicKey).Select(k => k.HeightN).Min();
             }
 
-            var interactor = new Interactor();
+            var newInteractor = new Interactor();
             
             switch (newType)
             {
                 case InteractorTypes.Key:
-                    interactor = new DynamicKey() { RowN = 0, ColN = 0, WidthN = minKeyWidth, HeightN = minKeyHeight };
+                    newInteractor = new DynamicKey() { RowN = 0, ColN = 0, WidthN = minKeyWidth, HeightN = minKeyHeight };
                     break;
                 case InteractorTypes.Popup:
-                    interactor = new DynamicPopup() { RowN = 0, ColN = 0 };
+                    newInteractor = new DynamicPopup() { RowN = 0, ColN = 0 };
                     break;
                 case InteractorTypes.OutputPanel:
-                    interactor = new DynamicOutputPanel() { RowN = 0, ColN = 0, WidthN = XmlKeyboard.Cols, HeightN = 2 * minKeyHeight };
+                    newInteractor = new DynamicOutputPanel() { RowN = 0, ColN = 0, WidthN = XmlKeyboard.Cols, HeightN = 2 * minKeyHeight };
                     break;
                 case InteractorTypes.Scratchpad:
-                    interactor = new DynamicScratchpad() { RowN = 0, ColN = 0, WidthN = 8 * minKeyWidth, HeightN = minKeyHeight};
+                    newInteractor = new DynamicScratchpad() { RowN = 0, ColN = 0, WidthN = 8 * minKeyWidth, HeightN = minKeyHeight};
                     break;
                 case InteractorTypes.SuggestionRow:
-                    interactor = new DynamicSuggestionRow() { RowN = 0, ColN = 0, WidthN = 8 * minKeyWidth, HeightN = minKeyHeight };
+                    newInteractor = new DynamicSuggestionRow() { RowN = 0, ColN = 0, WidthN = 8 * minKeyWidth, HeightN = minKeyHeight };
                     break;
                 case InteractorTypes.SuggestionColumn:
-                    interactor = new DynamicSuggestionCol() { RowN = 0, ColN = 0, HeightN = 4 * minKeyHeight};
+                    newInteractor = new DynamicSuggestionCol() { RowN = 0, ColN = 0, HeightN = 4 * minKeyHeight};
                     break;
             }
 
             foreach (var p in Profiles)
             {
-                interactor.Profiles.Add(new InteractorProfileMap(p, p.Name == "All"));
+                newInteractor.Profiles.Add(new InteractorProfileMap(p, p.Name == "All"));
             }
 
             var index = Interactor != null ? Interactors.IndexOf(Interactor) + 1 : 0;
-            Interactors.Insert(index, interactor);
+            var cell = FindEmptySpace(newInteractor.HeightN, newInteractor.WidthN);
+            if (cell != null)
+            {
+                newInteractor.RowN = cell.Item1;
+                newInteractor.ColN = cell.Item2;
+            }
+
+            Interactors.Insert(index, newInteractor);
             XmlKeyboard.Interactors = Interactors.ToList();
             CreateViewbox();
-            Interactor = interactor;
+            Interactor = newInteractor;
         }
 
         private void CloneInteractor()
         {
             if (Interactor == null) { return; }
 
+            InitializeOccupancyArray();
             var serializer = new XmlSerializer(Interactor.GetType());
             var sw = new StringWriter();
             var xmlWriter = XmlWriter.Create(sw, new XmlWriterSettings());
@@ -520,8 +584,15 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
             {
                 newInteractor.Profiles.Add(new InteractorProfileMap(p.Profile, p.IsMember));
             }
-            newInteractor.ColN += newInteractor.WidthN;
-            Interactors.Insert(Interactors.IndexOf(Interactor) + 1, newInteractor);
+            var index = Interactors.IndexOf(Interactor) + 1;
+            var cell = FindEmptySpace(newInteractor.HeightN, newInteractor.WidthN);
+            if (cell != null)
+            {
+                newInteractor.RowN = cell.Item1;
+                newInteractor.ColN = cell.Item2;
+            }
+
+            Interactors.Insert(index, newInteractor);
             XmlKeyboard.Interactors = Interactors.ToList();
             CreateViewbox();
             Interactor = newInteractor;
@@ -555,10 +626,9 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
         private Canvas canvas;
         private Border gazeRegion = new Border() { Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#FB6043"), BorderThickness = new Thickness(5), Child = new Viewbox() { Stretch = Stretch.Uniform,
         StretchDirection = StretchDirection.Both, Child = new TextBlock() { Text = "Gaze\nHere", TextAlignment=TextAlignment.Center, Foreground = Brushes.White } } };
-        public double ScreenWidth { get { return Graphics.VirtualScreenWidthInPixels; } }
-        public double ScreenHeight { get { return Graphics.VirtualScreenHeightInPixels; } }
-        public double ScreenLeft { get { return .2 * ScreenWidth; } }
-        public double ScreenTop { get { return .2 * ScreenHeight; } }
+        public double ScreenWidth { get { return 1200; } }
+        public double ScreenHeight { get { return 800; } }
+        public double ScreenOffset { get { return .15 * ScreenWidth; } }
         public Thickness Margin { get { return new Thickness(Left, Top, 0, 0); } }
         public double Width { get { return XmlKeyboard.WidthN ?? ScreenWidth; } }
         public double Height { get { return XmlKeyboard.HeightN ?? ScreenHeight; } }
@@ -569,11 +639,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                 var offset = XmlKeyboard.HorizontalOffsetN ?? 0;
                 return Enum.TryParse(XmlKeyboard.Position, out MoveToDirections newMovePosition)
                     ? newMovePosition == MoveToDirections.Left || newMovePosition == MoveToDirections.TopLeft || newMovePosition == MoveToDirections.BottomLeft
-                        ? ScreenLeft + offset
+                        ? ScreenOffset + offset
                         : newMovePosition == MoveToDirections.Right || newMovePosition == MoveToDirections.TopRight || newMovePosition == MoveToDirections.BottomRight
-                        ? ScreenLeft + ScreenWidth - Width + offset
-                        : ScreenLeft + ScreenWidth / 2 - Width / 2 + offset
-                    : ScreenLeft + offset;
+                        ? ScreenOffset + ScreenWidth - Width + offset
+                        : ScreenOffset + ScreenWidth / 2 - Width / 2 + offset
+                    : ScreenOffset + offset;
             }
         }
         public double Top
@@ -583,11 +653,11 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                 var offset = XmlKeyboard.VerticalOffsetN ?? 0;
                 return Enum.TryParse(XmlKeyboard.Position, out MoveToDirections newMovePosition)
                     ? newMovePosition == MoveToDirections.Top || newMovePosition == MoveToDirections.TopLeft || newMovePosition == MoveToDirections.TopRight
-                        ? ScreenTop + offset
+                        ? ScreenOffset + offset
                         : (newMovePosition == MoveToDirections.Bottom || newMovePosition == MoveToDirections.BottomLeft || newMovePosition == MoveToDirections.BottomRight)
-                        ? ScreenTop + ScreenHeight - Height + offset
-                        : ScreenTop + ScreenHeight / 2 - Height / 2 + offset
-                    : ScreenTop + offset;
+                        ? ScreenOffset + ScreenHeight - Height + offset
+                        : ScreenOffset + ScreenHeight / 2 - Height / 2 + offset
+                    : ScreenOffset + offset;
             }
         }
 
@@ -596,44 +666,110 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
             Viewbox = null;
 
             var thickness = 40;
+            var gazeTop = ScreenOffset + ScreenHeight + thickness + 2;
+            var gazeCenterX = ScreenOffset + .5 * ScreenWidth;
+            var gazeLeft = gazeCenterX - .45 * ScreenWidth;
+            var gazeRight = gazeCenterX + .45 * ScreenWidth;
             if (canvas != null && canvas.Children != null)
                 canvas.Children.Clear();
 
+            var radialGradientBrush = new RadialGradientBrush()
+            {
+                GradientOrigin = new Point(.2, 1),
+                Center = new Point(.2, 1),
+                RadiusX = 4,
+                RadiusY = 3
+            };
+
+            radialGradientBrush.GradientStops.Add(new GradientStop(Colors.Black, 0));
+            radialGradientBrush.GradientStops.Add(new GradientStop(Colors.DarkGray, 1));
+
             canvas = new Canvas()
             {
-                Width = 2 * ScreenLeft + ScreenWidth,
-                Height = 2 * ScreenTop + ScreenHeight,
+                Background = radialGradientBrush,
+                ClipToBounds = true,
+                Width = 2 * ScreenOffset + ScreenWidth,
+                Height = 2 * ScreenOffset + ScreenHeight,
             };
-            canvas.Children.Add(new Border()
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
             {
-                Background = new SolidColorBrush(Color.FromRgb(24,24,24)),
-                BorderBrush = Brushes.White,
-                BorderThickness = new Thickness(thickness),
+                Fill = Brushes.Silver,
+                Margin = new Thickness(ScreenOffset - thickness, ScreenOffset - thickness, 0, 0),
                 Width = ScreenWidth + 2 * thickness,
                 Height = ScreenHeight + 2 * thickness,
-                Margin = new Thickness(ScreenLeft - thickness, ScreenTop - thickness, 0, 0),
+                RadiusX = 10,
+                RadiusY = 10
             });
-            canvas.Children.Add(new System.Windows.Shapes.Line()
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
             {
-                X1 = ScreenLeft + .25 * ScreenWidth,
-                Y1 = ScreenTop + 1.15 * ScreenHeight,
-                X2 = ScreenLeft + .75 * ScreenWidth,
-                Y2 = ScreenTop + 1.15 * ScreenHeight,
-                SnapsToDevicePixels = true,
-                Stroke = Brushes.White,
-                StrokeThickness = 2 * thickness
+                Fill = radialGradientBrush,
+                Margin = new Thickness(ScreenOffset, ScreenOffset, 0, 0),
+                Width = ScreenWidth,
+                Height = ScreenHeight
             });
-            canvas.Children.Add(new System.Windows.Shapes.Line()
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
             {
-                X1 = ScreenLeft + .5 * ScreenWidth,
-                Y1 = ScreenTop + ScreenHeight + thickness,
-                X2 = ScreenLeft + .5 * ScreenWidth,
-                Y2 = ScreenTop + 1.15 * ScreenHeight,
-                SnapsToDevicePixels = true,
-                Stroke = Brushes.White,
-                StrokeThickness = 6 * thickness
+                Fill = Brushes.LightGray,
+                Margin = new Thickness(gazeLeft, gazeTop, 0, 0),
+                Width = gazeRight - gazeLeft,
+                Height = 40,
+                RadiusX = 20,
+                RadiusY = 20
             });
-            
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
+            {
+                Fill = Brushes.Black,
+                Margin = new Thickness(gazeLeft + 2, gazeTop + 2, 0, 0),
+                Width = 80,
+                Height = 36,
+                RadiusX = 18,
+                RadiusY = 18
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
+            {
+                Fill = Brushes.Black,
+                Margin = new Thickness(gazeRight - 82, gazeTop + 2, 0, 0),
+                Width = 80,
+                Height = 36,
+                RadiusX = 18,
+                RadiusY = 18
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Ellipse()
+            {
+                Fill = Brushes.Red,
+                Margin = new Thickness(gazeLeft + 24, gazeTop + 6, 0, 0),
+                Width = 28,
+                Height = 28
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Ellipse()
+            {
+                Fill = Brushes.Red,
+                Margin = new Thickness(gazeRight - 52, gazeTop + 6, 0, 0),
+                Width = 28,
+                Height = 28
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Rectangle()
+            {
+                Fill = Brushes.Black,
+                Margin = new Thickness(gazeCenterX - 60, gazeTop + 2, 0, 0),
+                Width = 120, Height = 36,
+                RadiusX = 18, RadiusY = 18
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Ellipse()
+            {
+                Fill = Brushes.Red,
+                Margin = new Thickness(gazeCenterX - 36, gazeTop + 12, 0, 0),
+                Width = 16,
+                Height = 16
+            });
+            canvas.Children.Add(new System.Windows.Shapes.Ellipse()
+            {
+                Fill = Brushes.Red,
+                Margin = new Thickness(gazeCenterX + 20, gazeTop + 12, 0, 0),
+                Width = 16,
+                Height = 16
+            });
+
             var dynamicKeyboard = new Views.Keyboards.Common.DynamicKeyboard(XmlKeyboard);
             dynamicKeyboard.SetBinding(FrameworkElement.WidthProperty, new Binding("Width") { Source = this });
             dynamicKeyboard.SetBinding(FrameworkElement.HeightProperty, new Binding("Height") { Source = this });
@@ -654,7 +790,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                     var parent = VisualAndLogicalTreeHelper.FindVisualParent<Grid>(i.Key);
                     if (parent != null)
                         parent.Children.Remove(i.Key);
-                    i.Key.Margin = new Thickness(ScreenLeft + i.Key.GazeRegion.Left * ScreenWidth, ScreenTop + i.Key.GazeRegion.Top * ScreenHeight, 0, 0);
+                    i.Key.Margin = new Thickness(ScreenOffset + i.Key.GazeRegion.Left * ScreenWidth, ScreenOffset + i.Key.GazeRegion.Top * ScreenHeight, 0, 0);
                     i.Key.Width = i.Key.GazeRegion.Width * ScreenWidth;
                     i.Key.Height = i.Key.GazeRegion.Height * ScreenHeight;
                     canvas.Children.Add(i.Key);
@@ -707,10 +843,9 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                     Interactor = i;
                 }
             }
-            canvas.ClipToBounds = true;
             Viewbox = new Viewbox();
-            Viewbox.Width = .7 * SystemParameters.VirtualScreenWidth;
-            Viewbox.Height = .7 * SystemParameters.VirtualScreenHeight;
+            Viewbox.Width = 1 * SystemParameters.VirtualScreenWidth;
+            Viewbox.Height = 1 * SystemParameters.VirtualScreenHeight;
             Viewbox.Stretch = Stretch.Fill;
             Viewbox.StretchDirection = StretchDirection.Both;
             Viewbox.Child = canvas;

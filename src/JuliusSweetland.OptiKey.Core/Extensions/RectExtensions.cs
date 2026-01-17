@@ -1,4 +1,5 @@
 ﻿// Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
+using System;
 using System.Windows;
 
 namespace JuliusSweetland.OptiKey.Extensions
@@ -37,6 +38,16 @@ namespace JuliusSweetland.OptiKey.Extensions
                 Top = inner.Top - outer.Top,
                 Bottom = outer.Bottom - inner.Bottom,
             };
+        }
+
+        public static bool IsCloseTo(this Rect rect1, Rect rect2, double epsilon = 1e-7)
+        {
+            bool xIsClose = Math.Abs(rect1.X - rect2.X) < epsilon;
+            bool yIsClose = Math.Abs(rect1.Y - rect2.Y) < epsilon;
+            bool widthIsClose = Math.Abs(rect1.Width - rect2.Width) < epsilon;
+            bool heightIsClose = Math.Abs(rect1.Height - rect2.Height) < epsilon;
+
+            return xIsClose && yIsClose && widthIsClose && heightIsClose;
         }
     }
 }

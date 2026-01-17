@@ -6,6 +6,7 @@ namespace JuliusSweetland.OptiKey.Observables.TriggerSources
 {
     public interface IFixationTriggerSource : ITriggerSource
     {
+        bool AllowPointsOverKeys { get; set; }
         KeyEnabledStates KeyEnabledStates { set; }
         IDictionary<KeyValue, TimeSpanOverrides> OverrideTimesByKey { get; }
     }

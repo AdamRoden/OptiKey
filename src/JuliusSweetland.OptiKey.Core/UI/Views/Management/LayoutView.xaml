@@ -10,54 +10,166 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
              xmlns:mgmt="clr-namespace:JuliusSweetland.OptiKey.UI.ViewModels.Management"
              xmlns:valueConverters="clr-namespace:JuliusSweetland.OptiKey.UI.ValueConverters"
              xmlns:c="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" Background="LightBlue" >
+             mc:Ignorable="d">
   <UserControl.Resources>
     <valueConverters:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
     <valueConverters:BoolToCustomValues x:Key="BoolToCustomValues" TrueValue="Enabled" FalseValue="Disabled"/>
     <CollectionViewSource x:Key="KeyboardList" Source="{Binding Source={x:Static mgmt:LayoutViewModel.KeyboardList}}"/>
   </UserControl.Resources>
-  <ScrollViewer HorizontalScrollBarVisibility="Auto">
     <GroupBox Header="Keyboard Editor" Height="Auto">
+    <StackPanel Orientation="Horizontal">
       <StackPanel>
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" SharedSizeGroup="c1"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <Label Grid.Row="1" Content="File:" Margin="5"/>
-          <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-            <Button Command="{Binding AddLayoutCommand}" MinWidth="48" Margin="5"
+        <Button Content="Click Me" Width="150" Height="50">
+          <Button.Style>
+            <Style TargetType="Button">
+              <Setter Property="Background">
+                <Setter.Value>
+                  <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="Red" Offset="0"/>
+                    <GradientStop Color="DarkRed" Offset="1"/>
+                  </LinearGradientBrush>
+                </Setter.Value>
+              </Setter>
+              <Setter Property="Foreground" Value="White"/>
+              <Setter Property="BorderBrush" Value="Green"/>
+              <Setter Property="BorderThickness" Value="2"/>
+              <Setter Property="FontWeight" Value="Bold"/>
+              <Setter Property="FontSize" Value="16"/>
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                      <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                    </Border>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+              <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Background">
+                    <Setter.Value>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="Green" Offset="0"/>
+                        <GradientStop Color="DarkGreen" Offset="1"/>
+                      </LinearGradientBrush>
+                    </Setter.Value>
+                  </Setter>
+                  <Setter Property="BorderBrush" Value="Red"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                  <Setter Property="Background">
+                    <Setter.Value>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="DarkGreen" Offset="0"/>
+                        <GradientStop Color="Green" Offset="1"/>
+                      </LinearGradientBrush>
+                    </Setter.Value>
+                  </Setter>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+        </Button>
+        <c:MetroTabControl>
+          <c:MetroTabItem Header="Setup">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="c1"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Label Grid.Row="1" Content="File:" Margin="5"/>
+              <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <Button Command="{Binding AddLayoutCommand}" MinWidth="48" Margin="5"
                     VerticalAlignment="Center" Content="New"/>
-            <Button Command="{Binding OpenFileCommand}" MinWidth="70" Margin="5"
+                <Button Command="{Binding OpenFileCommand}" MinWidth="70" Margin="5"
                   VerticalAlignment="Center" Content="Open"/>
-            <Button Command="{Binding SaveFileCommand}" Width="70" Margin="5" 
+                <Button Command="{Binding SaveFileCommand}" Width="70" Margin="5" 
                   VerticalAlignment="Center" Content="Save As"/>
-          </StackPanel>
-            <Label Grid.Row="3" Content="Built-In Layouts:" Margin="5"/>
-            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
-            <ComboBox HorizontalAlignment="Left" Margin="5" MinWidth="128" BorderThickness="0"
+              </StackPanel>
+              <Label Grid.Row="3" Content="Built-In Layouts:" Margin="5"/>
+              <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                <ComboBox HorizontalAlignment="Left" Margin="5" MinWidth="128" BorderThickness="0"
                             ItemsSource="{Binding Source={StaticResource KeyboardList}}"
                             SelectedItem="{Binding KeyboardName}"/>
-            <Button Command="{Binding AddBuiltInCommand}" Width="70" Margin="5" 
+                <Button Command="{Binding AddBuiltInCommand}" Width="70" Margin="5" 
                   VerticalAlignment="Center" Content="Load"/>
-          </StackPanel>
-        </Grid>
-        <StackPanel Orientation="Horizontal">
-          <controls:LayoutEditor/>
-          <Border Background="#303030" CornerRadius="0">
-            <UserControl VerticalAlignment="Top" Content="{Binding Viewbox}"/>
-          </Border>
-        </StackPanel>
+              </StackPanel>
+              <controls:LayoutEditor Grid.Row="4" Grid.ColumnSpan="4"/>
+            </Grid>
+          </c:MetroTabItem>
+          <c:MetroTabItem Header="Keygroups">
+            <StackPanel Orientation="Horizontal">
+              <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                  <Border Margin="5,0" CornerRadius="4" HorizontalAlignment="Center">
+                    <Button Width="48" Height="32" Command="{Binding AddProfileCommand}" Content="Add"/>
+                  </Border>
+                  <Border Margin="5,0" CornerRadius="4" HorizontalAlignment="Center">
+                    <Button Width="48" Height="32" Command="{Binding DeleteProfileCommand}" Content="Delete"/>
+                  </Border>
+                </StackPanel>
+                <ListBox x:Name="XmlKeyboardProfileListBox" HorizontalAlignment="Left" Margin="5" MinWidth="120" MinHeight="160" BorderThickness="0"
+             ItemsSource="{Binding Profiles}"
+             SelectedItem="{Binding Profile}"
+             DisplayMemberPath="Name"/>
+              </StackPanel>
+              <controls:ProfileEditor DataContext="{Binding Profile}"/>
+            </StackPanel>
+          </c:MetroTabItem>
+          <c:MetroTabItem Header="Content">
+            <StackPanel Orientation="Horizontal">
+              <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                  <Border Margin="5,0,0,0" CornerRadius="4" HorizontalAlignment="Center">
+                    <Button Width="48" Height="32" Command="{Binding AddInteractorCommand}"  Content="Add"/>
+                  </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                  <Border Margin="5,5,5,0"  CornerRadius="4" HorizontalAlignment="Center">
+                    <Button Width="48" Height="32" Command="{Binding CloneInteractorCommand}"  Content="Clone"/>
+                  </Border>
+                  <Border Margin="5,5,5,0"  CornerRadius="4" HorizontalAlignment="Center">
+                    <Button Width="48" Height="32" Command="{Binding DeleteInteractorCommand}"  Content="Delete"/>
+                  </Border>
+                </StackPanel>
+                <ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="5" MinWidth="120" MinHeight="200" MaxHeight="800" BorderThickness="0"
+                 ItemsSource="{Binding Interactors}"
+                 SelectedItem="{Binding Interactor}">
+                  <ListBox.ItemTemplate>
+                    <DataTemplate>
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition SharedSizeGroup="ssg1"/>
+                          <ColumnDefinition SharedSizeGroup="ssg2"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Margin="1,0,1,0" Text="{Binding InteractorLabel}"/>
+                        <TextBlock Grid.Column="1" Margin="1,0,1,0" Text="{Binding InteractorLocation}"/>
+                      </Grid>
+                    </DataTemplate>
+                  </ListBox.ItemTemplate>
+                </ListBox>
+              </StackPanel>
+              <controls:InteractorEditor SelectedInteractorType="{Binding SelectedInteractorType, Mode=TwoWay}"/>
+            </StackPanel>
+          </c:MetroTabItem>
+        </c:MetroTabControl>
       </StackPanel>
-    </GroupBox>
-  </ScrollViewer>
+      <Viewbox>
+        <UserControl VerticalAlignment="Top" Content="{Binding Viewbox}"/>
+      </Viewbox>
+    </StackPanel>
+  </GroupBox>
 </UserControl>
 

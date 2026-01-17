@@ -21,8 +21,7 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
       <!-- hide position-related props if size&position can't be changed, disable if this is temporary -->
-      <Style x:Key="VisibilityOfPositionProperties"
-                   TargetType="{x:Type FrameworkElement}">
+      <Style x:Key="VisibilityOfPositionProperties" TargetType="{x:Type FrameworkElement}">
         <Setter Property="Visibility" Value="Visible" />
         <Setter Property="IsEnabled" Value="False" />
         <Style.Triggers>
@@ -105,7 +104,7 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
           <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resx:Resources.THEME_LABEL}" 
-                               VerticalAlignment="Center" Margin="5" />
+                               VerticalAlignment="Center" Margin="5"/>
           <ComboBox Grid.Row="0" Grid.Column="1" 
                               ItemsSource="{Binding Themes}"
                               DisplayMemberPath="Key"
@@ -154,9 +153,9 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                                             Value="{Binding MagnifyDestinationPercentageOfScreen, Mode=TwoWay}" />
           <TextBlock Grid.Row="9" Grid.Column="0" Text="{x:Static resx:Resources.MAGNIFIER_CENTER_ON_SCREEN}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="9" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="9" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding MagnifierCenterOnScreen, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding MagnifierCenterOnScreen, Mode=TwoWay}" />
           <TextBlock Grid.Row="10" Grid.Column="0" Text="{x:Static resx:Resources.CONVERSATION_ONLY_MODE_LABEL}" 
                                IsEnabled="{Binding Source='ConversationOnlyMode', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5">
@@ -170,18 +169,18 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                 </Style.Triggers>
               </Style>
             </TextBlock.Style></TextBlock>
-          <CheckBox Grid.Row="10" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="10" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding ConversationOnlyMode, Mode=TwoWay}"
+                              Content="" IsOn="{Binding ConversationOnlyMode, Mode=TwoWay}"
                               IsEnabled="{Binding Source='ConversationOnlyMode', Converter={StaticResource EnabledIfNotOverridden}}"
                               Visibility="{Binding ConversationConfirmOnlyMode, Converter={StaticResource InvertedBoolToVisibilityConverter}}" />
           <TextBlock Grid.Row="11" Grid.Column="0" Text="{x:Static resx:Resources.CONVERSATION_CONFIRM_ENABLE_LABEL}" 
                                IsEnabled="{Binding Source='ConversationConfirmEnable', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="11" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="11" Grid.Column="1" 
                               VerticalAlignment="Center"
                               IsEnabled="{Binding Source='ConversationConfirmEnable', Converter={StaticResource EnabledIfNotOverridden}}"
-                              IsChecked="{Binding ConversationConfirmEnable, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding ConversationConfirmEnable, Mode=TwoWay}" />
           <TextBlock Grid.Row="12" Grid.Column="0" Text="{x:Static resx:Resources.CONVERSATION_CONFIRM_ONLY_MODE_LABEL}" 
                                VerticalAlignment="Center" Margin="5">
             <TextBlock.Style>
@@ -197,11 +196,11 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                 </Style.Triggers>
               </Style>
             </TextBlock.Style></TextBlock>
-          <CheckBox Grid.Row="12" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="12" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding ConversationConfirmOnlyMode, Mode=TwoWay}">
-            <CheckBox.Style>
-              <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+                              Content="" IsOn="{Binding ConversationConfirmOnlyMode, Mode=TwoWay}">
+            <controls:ToggleSwitch.Style>
+              <Style TargetType="{x:Type controls:ToggleSwitch}" BasedOn="{StaticResource {x:Type controls:ToggleSwitch}}">
                 <Setter Property="Visibility" Value="Visible" />
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding ConversationConfirmEnable}" Value="False">
@@ -212,8 +211,8 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                   </DataTrigger>
                 </Style.Triggers>
               </Style>
-            </CheckBox.Style>
-          </CheckBox>
+            </controls:ToggleSwitch.Style>
+          </controls:ToggleSwitch>
           <TextBlock Grid.Row="13" Grid.Column="0" Text="{x:Static resx:Resources.STARTUP_KEYBOARD_LABEL}" 
                                IsEnabled="{Binding Source='StartupKeyboard', Converter={StaticResource EnabledIfNotOverridden}}"
                                VerticalAlignment="Center" Margin="5">
@@ -321,9 +320,30 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                               ItemsSource="{Binding MainWindowStates}"
                               DisplayMemberPath="Key"
                               SelectedValuePath="Value"
-                              Visibility="{Binding MaximisedApp, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
-                              SelectedValue="{Binding MainWindowState, Mode=TwoWay}" 
-                              Style="{StaticResource VisibilityOfPositionProperties}"/>
+                              SelectedValue="{Binding MainWindowState, Mode=TwoWay}">
+            <ComboBox.Style>
+              <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MahApps.Styles.ComboBox}">
+                <Style.Setters>
+                  <Setter Property="IsEnabled" Value="False"/>
+                  <Setter Property="Visibility" Value="Visible"/>
+                </Style.Setters>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding MaximisedApp}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding PersistedWindowState}" Value="True">
+                    <Setter Property="IsEnabled" Value="True" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding MainWindowState}" Value="Maximised">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding MainWindowState}" Value="Minimised">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </ComboBox.Style>
+          </ComboBox>
           <TextBlock Grid.Row="18" Grid.Column="0" Text="{x:Static resx:Resources.FLOATING_POSITION_LABEL}" 
                                VerticalAlignment="Center" Margin="5" Style="{StaticResource VisibilityOfFloatingProperties}"/>
           <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding FloatingSizeAndPosition, Mode=TwoWay, StringFormat=F0}"
@@ -352,9 +372,9 @@ Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserve
                                             Style="{StaticResource VisibilityOfDockProperties}"/>
           <TextBlock Grid.Row="21" Grid.Column="0" Text="{x:Static resx:Resources.ENABLE_RESIZE_WITH_MOUSE}" 
                                VerticalAlignment="Center" Margin="5" />
-          <CheckBox Grid.Row="21" Grid.Column="1" 
+          <controls:ToggleSwitch Grid.Row="21" Grid.Column="1" 
                               VerticalAlignment="Center"
-                              IsChecked="{Binding EnableResizeWithMouse, Mode=TwoWay}" />
+                              Content="" IsOn="{Binding EnableResizeWithMouse, Mode=TwoWay}" />
         </Grid>
       </GroupBox>
       <GroupBox Grid.Row="1" Header="{x:Static resx:Resources.FONT}">

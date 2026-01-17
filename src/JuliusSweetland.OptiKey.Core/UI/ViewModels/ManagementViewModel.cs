@@ -1,15 +1,17 @@
 // Copyright (c) 2022 OPTIKEY LTD (UK company number 11854839) - All Rights Reserved
-
-using System.Linq;
+using JuliusSweetland.OptiKey.Enums;
 using JuliusSweetland.OptiKey.Properties;
 using JuliusSweetland.OptiKey.Services;
 using JuliusSweetland.OptiKey.UI.ViewModels.Management;
+using JuliusSweetland.OptiKey.UI.Views.Management;
 using log4net;
+using MahApps.Metro.Controls;
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
 using Prism.Mvvm;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
-using JuliusSweetland.OptiKey.Enums;
 
 namespace JuliusSweetland.OptiKey.UI.ViewModels
 {
@@ -20,7 +22,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
-        
+
         #region Ctor
 
         public ManagementViewModel(
@@ -37,17 +39,29 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             VisualsViewModel = new VisualsViewModel(windowManipulationService);
             FeaturesViewModel = new FeaturesViewModel();
             WordsViewModel = new WordsViewModel(dictionaryService);
-            
+            ThemeViewModel = new ThemeViewModel();
+
+            DictionaryView = new DictionaryView() { DataContext = DictionaryViewModel };
+            GesturesView = new GesturesView() { DataContext = GesturesViewModel };
+            LayoutView = new LayoutView() { DataContext = LayoutViewModel };
+            PointingAndSelectingView = new PointingAndSelectingView() { DataContext = PointingAndSelectingViewModel };
+            SoundsView = new SoundsView() { DataContext = SoundsViewModel };
+            VisualsView = new VisualsView() { DataContext = VisualsViewModel };
+            FeaturesView = new FeaturesView() { DataContext = FeaturesViewModel };
+            WordsView = new WordsView() { DataContext = WordsViewModel };
+            ThemeView = new ThemeView() { DataContext = ThemeViewModel };
+
             //Instantiate interaction requests and commands
             ConfirmationRequest = new InteractionRequest<Confirmation>();
+            ApplyCommand = new DelegateCommand<Window>(Apply);
             OkCommand = new DelegateCommand<Window>(Ok); //Can always click Ok
             CancelCommand = new DelegateCommand<Window>(Cancel); //Can always click Cancel
         }
-        
+
         #endregion
-        
+
         #region Properties
-        
+
         public bool ChangesRequireRestart
         {
             get
@@ -60,7 +74,6 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
                     || WordsViewModel.ChangesRequireRestart;
             }
         }
-
         public DictionaryViewModel DictionaryViewModel { get; private set; }
         public GesturesViewModel GesturesViewModel { get; private set; }
         public LayoutViewModel LayoutViewModel { get; private set; }
@@ -69,13 +82,25 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
         public VisualsViewModel VisualsViewModel { get; private set; }
         public FeaturesViewModel FeaturesViewModel { get; private set; }
         public WordsViewModel WordsViewModel { get; private set; }
+        public ThemeViewModel ThemeViewModel { get; private set; }
         
+        public DictionaryView DictionaryView { get; private set; }
+        public GesturesView GesturesView { get; private set; }
+        public LayoutView LayoutView { get; private set; }
+        public PointingAndSelectingView PointingAndSelectingView { get; private set; }
+        public SoundsView SoundsView { get; private set; }
+        public VisualsView VisualsView { get; private set; }
+        public FeaturesView FeaturesView { get; private set; }
+        public WordsView WordsView { get; private set; }
+        public ThemeView ThemeView { get; private set; }
+
         public InteractionRequest<Confirmation> ConfirmationRequest { get; private set; }
+        public DelegateCommand<Window> ApplyCommand { get; private set; }
         public DelegateCommand<Window> OkCommand { get; private set; }
         public DelegateCommand<Window> CancelCommand { get; private set; }
-        
+
         #endregion
-        
+
         #region Methods
 
         private void CoerceValues()
@@ -194,7 +219,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             WordsViewModel.ApplyChanges();
         }
 
-        private void Ok(Window window)
+        private void Apply(Window window)
         {
             CoerceValues();
 
@@ -228,8 +253,13 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels
             {
                 Log.Info("Applying management changes");
                 ApplyChanges();
-                window.Close();
             }
+        }
+
+        private void Ok(Window window)
+        {
+            Apply(window);
+            window.Close();
         }
 
         private static void Cancel(Window window)

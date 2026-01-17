@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using JuliusSweetland.OptiKey.Enums;
+using JuliusSweetland.OptiKey.Extensions;
 using JuliusSweetland.OptiKey.Properties;
 using JuliusSweetland.OptiKey.Services;
 using log4net;
-using MahApps.Metro.Controls;
 using Prism.Mvvm;
 using FontStretches = JuliusSweetland.OptiKey.Enums.FontStretches;
 using FontWeights = JuliusSweetland.OptiKey.Enums.FontWeights;
@@ -67,7 +67,8 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
                 {
                     new KeyValuePair<string, string>(Resources.ANDROID_DARK, "/Resources/Themes/Android_Dark.xaml"),
                     new KeyValuePair<string, string>(Resources.ANDROID_LIGHT, "/Resources/Themes/Android_Light.xaml"),
-                    new KeyValuePair<string, string>(Resources.ANDROID_TWO_TONE, "/Resources/Themes/Android_Two_Tone.xaml")
+                    new KeyValuePair<string, string>(Resources.ANDROID_TWO_TONE, "/Resources/Themes/Android_Two_Tone.xaml"),
+                    new KeyValuePair<string, string>("Custom", "/Resources/Themes/Custom_Theme.xaml")
                 };
             }
         }
@@ -486,7 +487,7 @@ namespace JuliusSweetland.OptiKey.UI.ViewModels.Management
         public string GazeIndicatorStyle
         {
             get { return gazeIndicatorStyle; }
-            set { SetProperty(ref gazeIndicatorStyle, value); }
+            set { Settings.Default.GazeIndicatorStyle = (GazeIndicatorStyles)Enum.Parse(typeof(GazeIndicatorStyles), value); SetProperty(ref gazeIndicatorStyle, value); }
         }
 
         private int gazeIndicatorSize;
